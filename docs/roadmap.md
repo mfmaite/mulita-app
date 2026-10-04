@@ -6,7 +6,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 
 - [x] Hoja de ruta del proyecto
 - [x] Colores y tipografía de Mulita
-- [ ] Drizzle + Neon Postgres
+- [x] Drizzle + Neon Postgres
 - [ ] Registro e ingreso con Better Auth (email y Google)
 - [ ] Shell responsive con selector de mes
 - [ ] Categorías con set por defecto y descripción
