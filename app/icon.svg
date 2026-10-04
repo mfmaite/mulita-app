@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+ <title id="title">Mulita — logo de contorno</title>
+ <desc id="desc">Mulita con caparazón segmentado, cuatro patas, cola larga y hocico descendente, dentro de un círculo de moneda.</desc>
+ <circle cx="256" cy="256" r="238" fill="#F4EBD8" stroke="#234B40" stroke-width="10"/>
+ <circle cx="256" cy="256" r="217" fill="none" stroke="#234B40" stroke-width="2.5"/>
+ <g fill="#F4EBD8" stroke="#234B40" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Patas del lado opuesto. -->
+  <path d="M220 285L218 309Q223 319 235 323L240 334H217L205 319L200 291Z"/>
+  <path d="M319 286L327 315Q342 320 346 333H321Q308 320 304 297Z"/>
+  <!-- Cola larga y afilada. -->
+  <path d="M159 236Q121 286 77 307L58 313Q106 322 164 273Z"/>
+  <path d="M139 261L150 279M121 279L132 291M103 292L113 302M86 301L94 309" fill="none" stroke-width="4"/>
+  <!-- Patas cercanas, con articulación y pie. -->
+  <path d="M182 286Q175 308 190 319L196 334H223Q218 321 203 318L204 290Z"/>
+  <path d="M289 290Q275 312 285 325L291 334H315Q312 324 296 320L309 295Z"/>
+  <!-- Caparazón ovalado: más largo y menos hemisférico. -->
+  <path d="M153 253C153 207 191 180 237 180C284 180 319 201 341 230L354 276Q355 297 335 304C313 312 290 294 267 289C239 283 207 303 179 286Q153 278 153 253Z"/>
+  <!-- Bandas del caparazón. -->
+  <path d="M208 184Q188 224 203 292M233 180Q213 224 228 290M258 183Q236 226 252 286M283 190Q259 231 277 291" fill="none" stroke-width="5"/>
+  <!-- Cabeza, orejas cortas y hocico descendente. -->
+  <path d="M340 231Q333 213 345 200Q352 211 351 228L366 210Q372 225 357 237C375 244 383 258 392 273Q405 293 425 304Q412 315 394 308L359 295Q334 284 336 260Q336 244 340 231Z"/>
+ </g>
+ <circle cx="363" cy="262" r="3.5" fill="#234B40"/>
+ <path d="M415 304L423 305" fill="none" stroke="#234B40" stroke-width="4" stroke-linecap="round"/>
+ <g fill="#234B40"><circle cx="256" cy="110" r="4"/><circle cx="256" cy="402" r="4"/></g>
+</svg>
