@@ -5,10 +5,11 @@ import { currencies } from "@/lib/db/schema";
 type CurrencyTotalsProps = {
   totals: Totals;
   empty: string;
+  inverse?: boolean;
   className?: string;
 };
 
-export function CurrencyTotals({ totals, empty, className }: CurrencyTotalsProps) {
+export function CurrencyTotals({ totals, empty, inverse, className }: CurrencyTotalsProps) {
   const present = currencies.filter((currency) => totals[currency]);
   if (present.length === 0) return <span className={className}>{empty}</span>;
 
@@ -17,7 +18,7 @@ export function CurrencyTotals({ totals, empty, className }: CurrencyTotalsProps
       {present.map((currency, index) => (
         <span key={currency}>
           {index > 0 && " · "}
-          <Money cents={totals[currency]!} currency={currency} />
+          <Money cents={totals[currency]!} currency={currency} inverse={inverse} />
         </span>
       ))}
     </span>

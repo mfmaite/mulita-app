@@ -21,7 +21,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [x] Compras en cuotas en pesos y dólares, con primer mes de cobro sugerido
 - [x] Pago de tarjeta desde una cuenta débito
 - [x] Metas de ahorro repartidas por porcentaje, con fecha estimada
-- [ ] Dashboard: presupuesto vs real, cuotas proyectadas, saldo de caja y tasa de ahorro
+- [x] Dashboard: presupuesto vs real, cuotas proyectadas, saldo de caja y tasa de ahorro
 - [ ] Tips de Mulita para ordenar las cuentas
 
 ## Etapa 3: Fijos
