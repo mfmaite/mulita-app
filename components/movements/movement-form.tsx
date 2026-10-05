@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Alert } from "@/components/ui/alert";
+import { AmountField } from "@/components/ui/amount-field";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
 import { SegmentedControl } from "@/components/ui/segmented-control";
@@ -11,7 +12,7 @@ import { TextField } from "@/components/ui/text-field";
 import { useFormAction } from "@/components/ui/use-form-action";
 import { today } from "@/lib/dates";
 import type { Currency, MovementType } from "@/lib/db/schema";
-import { centsToInput, parseMoney } from "@/lib/money";
+import { centsToInput, evaluateAmount } from "@/lib/money";
 import { createMovement, updateMovement } from "@/lib/movements/actions";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
 import { CardPurchaseFields } from "./card-purchase-fields";
@@ -122,14 +123,14 @@ export function MovementForm({ data, movement, onSaved }: MovementFormProps) {
         errors={state.fieldErrors?.type}
         onValueChange={changeType}
       />
-      <TextField
+      <AmountField
         label={`${amountLabel} (${currencySymbols[currency]})`}
         name="amount"
-        inputMode="decimal"
+        currency={currency}
         placeholder="0"
         autoFocus={!movement}
         value={amount}
-        onChange={(event) => setAmount(event.target.value)}
+        onValueChange={setAmount}
         errors={state.fieldErrors?.amount}
         className="font-display text-2xl font-bold"
       />
@@ -157,7 +158,7 @@ export function MovementForm({ data, movement, onSaved }: MovementFormProps) {
         <CardPurchaseFields
           card={card}
           date={date}
-          amount={parseMoney(amount)}
+          amount={evaluateAmount(amount)}
           currency={cardCurrency}
           onCurrencyChange={setCardCurrency}
           initialInstallments={movement?.installments}

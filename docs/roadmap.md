@@ -37,3 +37,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [ ] Armar el presupuesto a partir de eso: lo que queda para gastar se reparte entre categorías, con lo que falta asignar a la vista
 - [ ] Aviso cuando el presupuesto más el ahorro superan lo que ganás
 - [ ] Ingresos inesperados del mes: suman a lo disponible de ese mes, con la sugerencia de repartirlos 50% ahorro, 30% gasto planeado y 20% gusto libre
+
+## Mejoras
+
+- [x] Calculadora en el monto: se puede escribir la cuenta (por ejemplo 508,85+216,39) y guarda el resultado
