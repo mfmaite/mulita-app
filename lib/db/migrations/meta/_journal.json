@@ -36,6 +36,13 @@
       "when": 1791162563374,
       "tag": "0004_transfers_and_adjustments",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791163292683,
+      "tag": "0005_budgets",
+      "breakpoints": true
     }
   ]
 }
