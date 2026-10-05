@@ -5,7 +5,7 @@ import { creditCards } from "./cards";
 import { categories } from "./categories";
 import { id, timestamps } from "./columns";
 
-export const movementTypes = ["income", "expense", "transfer", "adjustment"] as const;
+export const movementTypes = ["income", "expense", "transfer", "adjustment", "card_payment"] as const;
 
 export const movementType = pgEnum("movement_type", movementTypes);
 

@@ -1,11 +1,12 @@
 import "server-only";
-import { and, asc, eq, inArray, isNotNull, isNull, type SQL } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, isNotNull, isNull, lt, type SQL } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { cardClosingOverrides, categories, creditCards, movements } from "@/lib/db/schema";
+import { accounts, cardClosingOverrides, categories, creditCards, movements } from "@/lib/db/schema";
+import { monthRange } from "@/lib/month";
 import { closingDayFor } from "./closing";
-import { installmentsInMonth, monthTotals, pendingAfter, projection, type CardPurchase } from "./statement";
+import { installmentsInMonth, monthTotals, pendingAfter, projection, totalsByCurrency, type CardPurchase } from "./statement";
 
 export async function listCardPurchases(userId: string, cardCondition?: SQL): Promise<CardPurchase[]> {
   const rows = await db
@@ -83,9 +84,22 @@ export async function getCardStatement(cardId: string, month: string) {
     .where(and(eq(creditCards.id, cardId), eq(creditCards.userId, user.id)));
   if (!card) notFound();
 
-  const [overrides, purchases] = await Promise.all([
+  const { start, end } = monthRange(month);
+  const [overrides, purchases, payments] = await Promise.all([
     overridesFor([card.id]),
     listCardPurchases(user.id, eq(movements.cardId, card.id)),
+    db
+      .select({ currency: accounts.currency, amount: movements.amount })
+      .from(movements)
+      .innerJoin(accounts, eq(accounts.id, movements.accountId))
+      .where(
+        and(
+          eq(movements.cardId, card.id),
+          eq(movements.type, "card_payment"),
+          gte(movements.date, start),
+          lt(movements.date, end),
+        ),
+      ),
   ]);
 
   return {
@@ -93,6 +107,7 @@ export async function getCardStatement(cardId: string, month: string) {
     lines: installmentsInMonth(purchases, month),
     totals: monthTotals(purchases, month),
     pending: pendingAfter(purchases, month),
+    paid: totalsByCurrency(payments),
     projection: projection(purchases, month, 6),
   };
 }

@@ -3,12 +3,20 @@
 import { and, eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { cardClosingOverrides, creditCards } from "@/lib/db/schema";
+import { activeOrCurrent } from "@/lib/db/conditions";
+import { accounts, cardClosingOverrides, creditCards, movements } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
 import { formatMonth, monthRange } from "@/lib/month";
 import { isCardInUse } from "@/lib/movements/usage";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
-import { cardSchema, closingOverrideSchema, type CardField, type ClosingOverrideField } from "./schemas";
+import {
+  cardPaymentSchema,
+  cardSchema,
+  closingOverrideSchema,
+  type CardField,
+  type CardPaymentField,
+  type ClosingOverrideField,
+} from "./schemas";
 
 type CardState = FormState<CardField>;
 
@@ -80,5 +88,49 @@ export async function setClosingOverride(cardId: string, _: FormState<ClosingOve
       return `Tá, en ${label} cierra el ${closingDay}.`;
     },
     success: "Tá, quedó guardado.",
+  });
+}
+
+export async function saveCardPayment(
+  cardId: string,
+  movementId: string | null,
+  _: FormState<CardPaymentField>,
+  formData: FormData,
+) {
+  return saveForm({
+    formData,
+    fields: ["amount", "accountId", "date"] as const,
+    schema: cardPaymentSchema,
+    save: async (data, userId) => {
+      const ownPayment = movementId
+        ? and(eq(movements.id, movementId), eq(movements.userId, userId), eq(movements.type, "card_payment"))
+        : undefined;
+      const [current] = ownPayment
+        ? await db.select({ accountId: movements.accountId }).from(movements).where(ownPayment)
+        : [];
+
+      const [[card], [account]] = await Promise.all([
+        db.select({ id: creditCards.id }).from(creditCards).where(ownCard(cardId, userId)),
+        db
+          .select({ id: accounts.id })
+          .from(accounts)
+          .where(
+            and(
+              eq(accounts.id, data.accountId),
+              eq(accounts.userId, userId),
+              activeOrCurrent(accounts.archivedAt, accounts.id, current?.accountId),
+            ),
+          ),
+      ]);
+      if (!card) throw new FieldError("accountId", "No encontramos esa tarjeta.");
+      if (!account) throw new FieldError("accountId", "Elegí desde qué cuenta pagás.");
+
+      if (ownPayment) {
+        await db.update(movements).set(data).where(ownPayment);
+        return "Tá, quedó actualizado.";
+      }
+      await db.insert(movements).values({ ...data, userId, cardId, type: "card_payment" });
+    },
+    success: "Tá, resumen pagado. Una cosa menos.",
   });
 }

@@ -6,20 +6,24 @@ import { MonthSelector } from "@/components/shell/month-selector";
 import { PageHeader } from "@/components/shell/page-header";
 import { getCardStatement } from "@/lib/cards/queries";
 import { formatMonth, monthParam, parseMonth } from "@/lib/month";
+import { getMovementFormData } from "@/lib/movements/queries";
 
 export const metadata: Metadata = { title: "Resumen de tarjeta" };
 
 export default async function CardStatementPage({ params, searchParams }: PageProps<"/tarjetas/[id]">) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const month = parseMonth(query[monthParam]);
-  const { card, lines, totals, pending, projection } = await getCardStatement(id, month);
+  const [{ card, lines, totals, pending, paid, projection }, { accounts }] = await Promise.all([
+    getCardStatement(id, month),
+    getMovementFormData(),
+  ]);
 
   return (
     <>
       <PageHeader title={card.name} description={`Resumen de ${formatMonth(month).toLowerCase()} · cierra el ${card.monthClosingDay}`}>
         <MonthSelector month={month} path={`/tarjetas/${card.id}`} />
       </PageHeader>
-      <StatementSummary totals={totals} pending={pending} />
+      <StatementSummary cardId={card.id} accounts={accounts} totals={totals} pending={pending} paid={paid} />
       <section className="space-y-2">
         <h2 className="text-lg">Cuotas del mes</h2>
         <StatementLines lines={lines} />

@@ -57,6 +57,13 @@
       "when": 1791166246541,
       "tag": "0007_card_purchases",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791168741558,
+      "tag": "0008_card_payments",
+      "breakpoints": true
     }
   ]
 }

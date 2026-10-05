@@ -21,6 +21,8 @@ function describe(movement: MonthMovement) {
       };
     case "adjustment":
       return { title: movement.detail ?? "Cuadre de saldo", subtitle: movement.accountName };
+    case "card_payment":
+      return { title: movement.detail ?? `Pago de ${movement.cardName}`, subtitle: movement.accountName };
     default:
       return {
         title: movement.detail ?? movement.categoryName ?? "Sin categoría",

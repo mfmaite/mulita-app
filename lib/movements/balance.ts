@@ -7,6 +7,7 @@ const direction: Record<keyof BalanceTotals, 1 | -1> = {
   expense: -1,
   transfer: -1,
   adjustment: 1,
+  card_payment: -1,
   transferIn: 1,
 };
 
