@@ -16,13 +16,17 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.5.0",
     "@neondatabase/serverless": "^1.2.0",
     "better-auth": "^1.7.7",
+    "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.3",
+    "lucide-react": "^1.52.0",
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
+    "tailwind-merge": "^3.7.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
