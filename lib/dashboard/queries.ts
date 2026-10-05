@@ -1,14 +1,17 @@
 import "server-only";
-import { and, desc, eq, gte, lt, lte, sum } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, lt, lte, sum } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { accountsWithBalance } from "@/lib/accounts/queries";
 import { requireSession } from "@/lib/auth/session";
+import { toPesos } from "@/lib/budgets/calculations";
 import { getBudgetMonth } from "@/lib/budgets/queries";
 import { listCardPurchases } from "@/lib/cards/queries";
 import { monthTotals, totalsByCurrency } from "@/lib/cards/statement";
 import { db } from "@/lib/db";
-import { accounts, exchangeRates, movements } from "@/lib/db/schema";
+import { dayOfYear } from "@/lib/dates";
+import { accounts, categories, exchangeRates, movements } from "@/lib/db/schema";
 import { monthRange, shiftMonth } from "@/lib/month";
+import { pickTip } from "@/lib/tips";
 import { monthSummary } from "./summary";
 
 const destinationAccounts = alias(accounts, "destination_accounts");
@@ -32,6 +35,25 @@ async function monthMovementTotals(userId: string, month: string) {
     .groupBy(movements.type, accounts.currency, accounts.type, destinationAccounts.type, destinationAccounts.currency);
 }
 
+async function unexpectedIncomeRows(userId: string, month: string) {
+  const { start, end } = monthRange(month);
+  return db
+    .select({ currency: accounts.currency, total: sum(movements.amount).mapWith(Number) })
+    .from(movements)
+    .innerJoin(accounts, eq(accounts.id, movements.accountId))
+    .innerJoin(categories, eq(categories.id, movements.categoryId))
+    .where(
+      and(
+        eq(movements.userId, userId),
+        eq(movements.type, "income"),
+        ilike(categories.name, "%inesperad%"),
+        gte(movements.date, start),
+        lt(movements.date, end),
+      ),
+    )
+    .groupBy(accounts.currency);
+}
+
 async function rateFor(userId: string, month: string) {
   const [rate] = await db
     .select({ usdToUyu: exchangeRates.usdToUyu })
@@ -45,18 +67,29 @@ async function rateFor(userId: string, month: string) {
 export async function getDashboard(month: string) {
   const { user } = await requireSession();
 
-  const [accountRows, totalsRows, purchases, rate, budget] = await Promise.all([
+  const [accountRows, totalsRows, purchases, rate, budget, unexpected] = await Promise.all([
     accountsWithBalance(user.id),
     monthMovementTotals(user.id, month),
     listCardPurchases(user.id),
     rateFor(user.id, month),
     getBudgetMonth(month),
+    unexpectedIncomeRows(user.id, month),
   ]);
 
   const installmentsThisMonth = monthTotals(purchases, month);
 
+  const tip = pickTip(
+    {
+      overBudget: budget.rows.filter((row) => row.level === "over").map((row) => row.name),
+      unexpectedIncome: unexpected.reduce((total, { currency, total: amount }) => total + (toPesos(amount, currency, rate) ?? 0), 0),
+      hasBudget: budget.summary.budgeted > 0,
+    },
+    dayOfYear(),
+  );
+
   return {
     hasAccounts: accountRows.length > 0,
+    tip,
     cash: totalsByCurrency(
       accountRows
         .filter((account) => account.type !== "savings")

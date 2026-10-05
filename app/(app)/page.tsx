@@ -4,6 +4,7 @@ import { BudgetCard } from "@/components/dashboard/budget-card";
 import { CashCard } from "@/components/dashboard/cash-card";
 import { InstallmentsCard } from "@/components/dashboard/installments-card";
 import { MonthCard } from "@/components/dashboard/month-card";
+import { TipCard } from "@/components/dashboard/tip-card";
 import { MonthSelector } from "@/components/shell/month-selector";
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -23,6 +24,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
       </PageHeader>
       {dashboard.hasAccounts ? (
         <div className="grid gap-3 lg:grid-cols-2">
+          <TipCard tip={dashboard.tip} className="lg:col-span-2" />
           <CashCard cash={dashboard.cash} />
           <MonthCard summary={dashboard.summary} month={month} />
           <BudgetCard budget={dashboard.budget} month={month} />
