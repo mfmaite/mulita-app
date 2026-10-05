@@ -43,6 +43,13 @@
       "when": 1791163292683,
       "tag": "0005_budgets",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791165638451,
+      "tag": "0006_credit_cards",
+      "breakpoints": true
     }
   ]
 }

@@ -17,7 +17,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 
 ## Etapa 2: Tarjetas y metas
 
-- [ ] Tarjetas de crédito con día de cierre (editable para un mes puntual)
+- [x] Tarjetas de crédito con día de cierre (editable para un mes puntual)
 - [ ] Compras en cuotas en pesos y dólares, con primer mes de cobro sugerido
 - [ ] Pago de tarjeta desde una cuenta débito
 - [ ] Metas de ahorro repartidas por porcentaje, con fecha estimada
