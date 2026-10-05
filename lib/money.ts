@@ -45,6 +45,61 @@ export function parseMoney(input: string) {
   return isNegative ? -cents : cents;
 }
 
+const operatorSymbols: Record<string, "+" | "-" | "*" | "/"> = {
+  "+": "+",
+  "-": "-",
+  "−": "-",
+  "*": "*",
+  "x": "*",
+  "×": "*",
+  "/": "/",
+  "÷": "/",
+};
+const operatorPattern = /[+\-−*x×/÷]/;
+
+export function hasOperation(input: string) {
+  return operatorPattern.test(input.trim().replace(/^[-−]/, ""));
+}
+
+export function evaluateAmount(input: string) {
+  if (!hasOperation(input)) return parseMoney(input);
+
+  const tokens = input.replace(/US\$|\$|\s/g, "").match(/[+\-−*x×/÷]|[^+\-−*x×/÷]+/g) ?? [];
+  if (tokens[0] && operatorSymbols[tokens[0]] === "-") tokens.splice(0, 2, `-${tokens[1] ?? ""}`);
+
+  const numbers: number[] = [];
+  const operations: string[] = [];
+  for (const [index, token] of tokens.entries()) {
+    if (index % 2 === 1) {
+      const operation = operatorSymbols[token];
+      if (!operation) return null;
+      operations.push(operation);
+      continue;
+    }
+    const cents = parseMoney(token);
+    if (cents === null) return null;
+    numbers.push(cents / 100);
+  }
+  if (numbers.length !== operations.length + 1) return null;
+
+  const terms = [numbers[0]];
+  const signs: string[] = [];
+  for (const [index, operation] of operations.entries()) {
+    const next = numbers[index + 1];
+    if (operation === "*") terms[terms.length - 1] *= next;
+    else if (operation === "/") {
+      if (next === 0) return null;
+      terms[terms.length - 1] /= next;
+    } else {
+      signs.push(operation);
+      terms.push(next);
+    }
+  }
+
+  const total = terms.reduce((sum, term, index) => (index === 0 ? term : signs[index - 1] === "+" ? sum + term : sum - term), 0);
+  return Math.round(total * 100);
+}
+
 export function centsToInput(cents: number) {
   const fractionDigits = cents % 100 === 0 ? 0 : 2;
   return (cents / 100).toLocaleString("es-UY", {
@@ -61,7 +116,7 @@ export function moneyField(message: string) {
     .string()
     .trim()
     .transform((value, context) => {
-      const cents = parseMoney(value || "0");
+      const cents = evaluateAmount(value || "0");
       if (cents === null) {
         context.addIssue({ code: "custom", message });
         return z.NEVER;

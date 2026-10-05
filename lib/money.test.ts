@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { centsToInput, formatMoney, moneyField, parseMoney } from "./money";
+import { centsToInput, evaluateAmount, formatMoney, hasOperation, moneyField, parseMoney } from "./money";
 
 const nbsp = "\u00a0";
 
@@ -69,5 +69,44 @@ describe("moneyField", () => {
 
   it("rejects amounts it cannot understand", () => {
     expect(field.safeParse("mil pesos").error?.issues[0].message).toBe("No se entiende");
+  });
+});
+
+describe("evaluateAmount", () => {
+  it.each([
+    ["508,85+216,39", 72524],
+    ["1.500 + 320", 182000],
+    ["4854 ÷ 3", 161800],
+    ["4854/3", 161800],
+    ["1.500 × 3", 450000],
+    ["150x2", 30000],
+    ["1000 - 250,50", 74950],
+    ["100 + 50 × 2", 20000],
+    ["-200 + 50", -15000],
+    ["$ 1.000 − 1", 99900],
+  ])("evaluates %s as %i cents", (input, cents) => {
+    expect(evaluateAmount(input)).toBe(cents);
+  });
+
+  it("still parses plain amounts", () => {
+    expect(evaluateAmount("1.500,50")).toBe(150050);
+  });
+
+  it.each(["100+", "+", "100 ÷ 0", "100 + abc", "10 ** 2"])("rejects %s", (input) => {
+    expect(evaluateAmount(input)).toBeNull();
+  });
+});
+
+describe("hasOperation", () => {
+  it("detects operations but not a leading minus", () => {
+    expect(hasOperation("508,85+216,39")).toBe(true);
+    expect(hasOperation("-712")).toBe(false);
+    expect(hasOperation("1.500,50")).toBe(false);
+  });
+});
+
+describe("moneyField with operations", () => {
+  it("stores the result of the operation", () => {
+    expect(moneyField("No se entiende").parse("508,85+216,39")).toBe(72524);
   });
 });
