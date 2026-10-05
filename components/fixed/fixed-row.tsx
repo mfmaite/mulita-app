@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { Money } from "@/components/ui/money";
 import { cn } from "@/lib/cn";
-import { formatShortDay } from "@/lib/dates";
-import type { DueFixed, FixedRow as FixedRowData } from "@/lib/fixed/queries";
+import type { FixedRow as FixedRowData } from "@/lib/fixed/queries";
 import { frequencyLabels } from "./fixed-meta";
+import { FixedStatusLabel, type FixedStatusRow } from "./fixed-status-label";
 
 function routeOf({ fixed, categoryName, accountName, cardName, destinationName }: FixedRowData) {
   if (fixed.kind === "card_payment") return `${accountName} → ${cardName}`;
@@ -11,16 +11,8 @@ function routeOf({ fixed, categoryName, accountName, cardName, destinationName }
   return [categoryName, accountName ?? cardName].filter(Boolean).join(" · ");
 }
 
-function StatusLabel({ row }: { row: FixedRowData & Partial<Pick<DueFixed, "status" | "payment">> }) {
-  const { fixed, status, payment } = row;
-
-  if (payment) return <span className="font-semibold text-success-strong">Pagado el {formatShortDay(payment.date)}</span>;
-  if (status === "overdue") return <span className="font-semibold text-danger-strong">Venció el {fixed.dueDay}</span>;
-  return <>Vence el {fixed.dueDay}</>;
-}
-
 type FixedRowProps = {
-  row: FixedRowData & Partial<Pick<DueFixed, "status" | "payment">>;
+  row: FixedStatusRow;
   pay?: ReactNode;
   actions: ReactNode;
 };
@@ -35,7 +27,7 @@ export function FixedRow({ row, pay, actions }: FixedRowProps) {
         <p className="leading-snug font-semibold">{fixed.name}</p>
         <p className="text-sm text-muted">{routeOf(row)}</p>
         <p className="text-sm text-muted">
-          <StatusLabel row={row} /> · {frequencyLabels[fixed.frequency].toLowerCase()}
+          <FixedStatusLabel row={row} /> · {frequencyLabels[fixed.frequency].toLowerCase()}
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1.5">

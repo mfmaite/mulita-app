@@ -2,9 +2,9 @@ import { CurrencyTotals } from "@/components/cards/currency-totals";
 import type { Dashboard } from "@/lib/dashboard/queries";
 import { DashboardCard } from "./dashboard-card";
 
-export function InstallmentsCard({ installments }: Pick<Dashboard, "installments">) {
+export function InstallmentsCard({ installments, className }: Pick<Dashboard, "installments"> & { className?: string }) {
   return (
-    <DashboardCard title="Cuotas de tarjeta" link={{ href: "/tarjetas", label: "Tarjetas" }}>
+    <DashboardCard title="Cuotas de tarjeta" link={{ href: "/tarjetas", label: "Tarjetas" }} className={className}>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-0.5">
           <p className="text-sm text-muted">Este mes</p>
