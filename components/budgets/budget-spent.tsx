@@ -3,9 +3,9 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import type { BudgetMonth } from "@/lib/budgets/queries";
 import { BudgetStatus } from "./budget-status";
 
-export function BudgetSummary({ summary }: { summary: BudgetMonth["summary"] }) {
+export function BudgetSpent({ summary }: { summary: BudgetMonth["summary"] }) {
   return (
-    <section className="space-y-3 rounded-2xl bg-green-700 px-5 py-4 text-cream-50">
+    <>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
         <div>
           <p className="text-sm text-green-100">Gastado</p>
@@ -20,6 +20,6 @@ export function BudgetSummary({ summary }: { summary: BudgetMonth["summary"] }) 
       <p className="rounded-lg bg-cream-50 px-3 py-1.5 text-sm">
         <BudgetStatus budget={summary.budgeted} spent={summary.spent} level={summary.level} />
       </p>
-    </section>
+    </>
   );
 }

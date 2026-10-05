@@ -2,7 +2,7 @@ import { Alert } from "@/components/ui/alert";
 import { Money } from "@/components/ui/money";
 import type { Dashboard } from "@/lib/dashboard/queries";
 import { DashboardCard } from "./dashboard-card";
-import { Stat } from "./stat";
+import { Stat } from "@/components/ui/stat";
 
 export function MonthCard({ summary, month }: Pick<Dashboard, "summary"> & { month: string }) {
   const rate = summary.savingsRate === null ? null : `${summary.savingsRate.toFixed(1).replace(".", ",")}% de lo que entró`;

@@ -1,7 +1,7 @@
 import { PiggyBank } from "lucide-react";
 import type { Metadata } from "next";
 import { BudgetRow } from "@/components/budgets/budget-row";
-import { BudgetSummary } from "@/components/budgets/budget-summary";
+import { BudgetOverview } from "@/components/budgets/budget-overview";
 import { ExchangeRateCard } from "@/components/budgets/exchange-rate-card";
 import { MonthSelector } from "@/components/shell/month-selector";
 import { PageHeader } from "@/components/shell/page-header";
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Presupuesto" };
 
 export default async function BudgetPage({ searchParams }: PageProps<"/presupuesto">) {
   const month = parseMonth((await searchParams)[monthParam]);
-  const { rows, summary, rate, unconvertedUsd } = await getBudgetMonth(month);
+  const { rows, summary, plan, rate, unconvertedUsd } = await getBudgetMonth(month);
   const groups = [
     { title: "Con presupuesto", rows: rows.filter((row) => row.budget > 0) },
     { title: "Sin presupuesto", rows: rows.filter((row) => row.budget === 0) },
@@ -32,7 +32,7 @@ export default async function BudgetPage({ searchParams }: PageProps<"/presupues
         />
       ) : (
         <>
-          <BudgetSummary summary={summary} />
+          <BudgetOverview summary={summary} plan={plan} month={month} />
           <ExchangeRateCard month={month} rate={rate} unconvertedUsd={unconvertedUsd} />
           {groups.map((group) => (
             <section key={group.title} className="space-y-2">

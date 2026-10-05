@@ -5,14 +5,18 @@ import { db } from "@/lib/db";
 import { accounts, budgets, categories, exchangeRates, movements } from "@/lib/db/schema";
 import { listCardPurchases } from "@/lib/cards/queries";
 import { installmentsInMonth } from "@/lib/cards/statement";
+import { monthSummary } from "@/lib/dashboard/summary";
 import { monthRange } from "@/lib/month";
-import { spentByCategory, usageOf } from "./calculations";
+import { monthMovementTotals, unexpectedIncomeRows } from "@/lib/movements/month-totals";
+import { getMonthlyPlan } from "@/lib/plans/queries";
+import { spentByCategory, toPesos, usageOf } from "./calculations";
+import { monthPlan } from "./plan";
 
 export async function getBudgetMonth(month: string) {
   const { user } = await requireSession();
   const { start, end } = monthRange(month);
 
-  const [categoryRows, budgetRows, [rate], directSpent, cardPurchases] = await Promise.all([
+  const [categoryRows, budgetRows, [rate], directSpent, cardPurchases, plan, movementTotals, unexpected] = await Promise.all([
     db
       .select({ id: categories.id, name: categories.name })
       .from(categories)
@@ -43,6 +47,9 @@ export async function getBudgetMonth(month: string) {
       )
       .groupBy(movements.categoryId, accounts.currency),
     listCardPurchases(user.id),
+    getMonthlyPlan(user.id, month),
+    monthMovementTotals(user.id, month),
+    unexpectedIncomeRows(user.id, month),
   ]);
 
   const installmentSpent = installmentsInMonth(cardPurchases, month).map(({ purchase, amount }) => ({
@@ -64,9 +71,13 @@ export async function getBudgetMonth(month: string) {
   const budgeted = rows.reduce((total, row) => total + row.budget, 0);
   const spent = rows.reduce((total, row) => total + row.spent, 0);
 
+  const { income, saved } = monthSummary(movementTotals, {}, rate?.usdToUyu);
+  const unexpectedIncome = unexpected.reduce((total, row) => total + (toPesos(row.total, row.currency, rate?.usdToUyu) ?? 0), 0);
+
   return {
     rows,
     summary: { budgeted, spent, ...usageOf(spent, budgeted) },
+    plan: monthPlan({ ...plan, income, unexpectedIncome, saved, budgeted }),
     rate: rate ? { usdToUyu: rate.usdToUyu, month: rate.month.slice(0, 7) } : null,
     unconvertedUsd,
   };
