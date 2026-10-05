@@ -1,7 +1,8 @@
 "use server";
 
 import type { FormState } from "@/lib/forms";
-import { formatMonth, parseMonth } from "@/lib/month";
+import { changeMessage } from "@/lib/budgets/messages";
+import { parseMonth } from "@/lib/month";
 import { saveForm } from "@/lib/save-form";
 import { savePlanFrom } from "./queries";
 import { planFields, planSchema, type PlanField } from "./schemas";
@@ -13,7 +14,10 @@ export async function setMonthlyPlan(month: string, _: FormState<PlanField>, for
     formData,
     fields: planFields,
     schema: planSchema,
-    save: (data, userId) => savePlanFrom(userId, validMonth, data),
-    success: `Tá, vale desde ${formatMonth(validMonth).toLowerCase()} en adelante.`,
+    save: async ({ onlyThisMonth, ...plan }, userId) => {
+      await savePlanFrom(userId, validMonth, plan, onlyThisMonth);
+      return changeMessage(validMonth, onlyThisMonth);
+    },
+    success: changeMessage(validMonth, false),
   });
 }

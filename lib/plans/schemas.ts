@@ -6,8 +6,10 @@ const amount = moneyField("Ese monto no se entiende. Probá con algo como 1.500 
   "No puede ser negativo.",
 );
 
-export const planSchema = z.object({ expectedIncome: amount, savingsTarget: amount });
+export const onlyThisMonthField = z.string().transform((value) => value === "on");
 
-export const planFields = ["expectedIncome", "savingsTarget"] as const;
+export const planSchema = z.object({ expectedIncome: amount, savingsTarget: amount, onlyThisMonth: onlyThisMonthField });
+
+export const planFields = ["expectedIncome", "savingsTarget", "onlyThisMonth"] as const;
 
 export type PlanField = (typeof planFields)[number];

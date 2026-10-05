@@ -6,8 +6,8 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { MonthPlan } from "@/lib/budgets/plan";
 import { centsToInput } from "@/lib/money";
-import { formatMonth } from "@/lib/month";
 import { setMonthlyPlan } from "@/lib/plans/actions";
+import { PeriodField } from "./period-field";
 
 type PlanFormProps = {
   plan: MonthPlan;
@@ -41,9 +41,10 @@ export function PlanForm({ plan, month, onSaved }: PlanFormProps) {
         placeholder="0"
         value={savingsTarget}
         onValueChange={setSavingsTarget}
-        hint={`Vale desde ${formatMonth(month).toLowerCase()} en adelante. También reparte tus metas.`}
+        hint="Con esto también se reparten tus metas."
         errors={state.fieldErrors?.savingsTarget}
       />
+      <PeriodField month={month} />
       <SubmitButton pending={isPending} className="w-full" pendingLabel="Guardando...">
         Guardar
       </SubmitButton>
