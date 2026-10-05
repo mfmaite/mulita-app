@@ -27,7 +27,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
         <div className="grid gap-3 lg:grid-cols-2">
           <TipCard tip={dashboard.tip} className="lg:col-span-2" />
           <CashCard cash={dashboard.cash} />
-          <MonthCard summary={dashboard.summary} month={month} />
+          <MonthCard summary={dashboard.summary} plan={dashboard.budget.plan} month={month} />
           <FixedCard fixed={dashboard.fixed} month={month} />
           <BudgetCard budget={dashboard.budget} month={month} />
           <InstallmentsCard installments={dashboard.installments} className="lg:col-span-2" />

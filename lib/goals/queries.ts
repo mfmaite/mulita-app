@@ -4,17 +4,10 @@ import { accountsWithBalance } from "@/lib/accounts/queries";
 import { requireSession } from "@/lib/auth/session";
 import { toPesos } from "@/lib/budgets/calculations";
 import { db } from "@/lib/db";
-import { exchangeRates, savingsGoals, userSettings } from "@/lib/db/schema";
+import { exchangeRates, savingsGoals } from "@/lib/db/schema";
 import { currentMonth } from "@/lib/month";
+import { getMonthlyPlan } from "@/lib/plans/queries";
 import { goalProgress, unassignedShare } from "./calculations";
-
-export async function getSavingsPlan(userId: string) {
-  const [settings] = await db
-    .select({ monthlySavingsPlan: userSettings.monthlySavingsPlan })
-    .from(userSettings)
-    .where(eq(userSettings.userId, userId));
-  return settings?.monthlySavingsPlan ?? 0;
-}
 
 export async function getSavingsPool(userId: string) {
   const [accountRows, [rate]] = await Promise.all([
@@ -44,9 +37,9 @@ export async function getGoalsOverview() {
   const { user } = await requireSession();
   const month = currentMonth();
 
-  const [goals, monthlyPlan, pool] = await Promise.all([
+  const [goals, { savingsTarget: monthlyPlan }, pool] = await Promise.all([
     db.select().from(savingsGoals).where(eq(savingsGoals.userId, user.id)).orderBy(desc(savingsGoals.share), asc(savingsGoals.name)),
-    getSavingsPlan(user.id),
+    getMonthlyPlan(user.id, month),
     getSavingsPool(user.id),
   ]);
 

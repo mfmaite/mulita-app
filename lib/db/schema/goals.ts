@@ -19,12 +19,4 @@ export const savingsGoals = pgTable(
   (table) => [uniqueIndex("savings_goals_user_id_name_idx").on(table.userId, sql`lower(${table.name})`)],
 );
 
-export const userSettings = pgTable("user_settings", {
-  userId: uuid()
-    .primaryKey()
-    .references(() => users.id, { onDelete: "cascade" }),
-  monthlySavingsPlan: bigint({ mode: "number" }).default(0).notNull(),
-  ...timestamps,
-});
-
 export type SavingsGoal = typeof savingsGoals.$inferSelect;

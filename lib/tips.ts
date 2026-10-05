@@ -19,9 +19,11 @@ const everydayTips = [
   "Si un gasto inesperado te agarra, usá el colchón y después ajustá el presupuesto o el ahorro del mes.",
 ];
 
+const toPesos = (cents: number) => Math.round(cents / 100) * 100;
+
 export function splitUnexpectedIncome(amount: number) {
-  const savings = Math.round(amount * 0.5);
-  const planned = Math.round(amount * 0.3);
+  const savings = toPesos(amount * 0.5);
+  const planned = toPesos(amount * 0.3);
   return { savings, planned, treat: amount - savings - planned };
 }
 

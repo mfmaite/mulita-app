@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { moneyField } from "@/lib/money";
+import { onlyThisMonthField } from "@/lib/plans/schemas";
 
 const unclear = "Ese monto no se entiende. Probá con algo como 1.500 o 1.500,50.";
 
 export const budgetSchema = z.object({
   amount: moneyField(unclear).refine((cents) => cents >= 0, "El presupuesto no puede ser negativo."),
+  onlyThisMonth: onlyThisMonthField,
 });
 
 export const exchangeRateSchema = z.object({

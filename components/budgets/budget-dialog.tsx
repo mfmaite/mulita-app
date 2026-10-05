@@ -8,7 +8,7 @@ import { useFormAction } from "@/components/ui/use-form-action";
 import { setBudget } from "@/lib/budgets/actions";
 import type { BudgetRow } from "@/lib/budgets/queries";
 import { centsToInput } from "@/lib/money";
-import { formatMonth } from "@/lib/month";
+import { PeriodField } from "./period-field";
 
 type BudgetDialogProps = {
   row: BudgetRow;
@@ -27,10 +27,10 @@ function BudgetForm({ row, month, onSaved }: BudgetDialogProps & { onSaved: () =
         placeholder="0"
         autoFocus
         defaultValue={row.budget > 0 ? centsToInput(row.budget) : undefined}
-        hint={`Vale desde ${formatMonth(month).toLowerCase()} en adelante. Los meses anteriores no cambian.`}
         errors={state.fieldErrors?.amount}
         className="font-display text-2xl font-bold"
       />
+      <PeriodField month={month} />
       <SubmitButton pending={isPending} className="w-full" pendingLabel="Guardando...">
         Guardar presupuesto
       </SubmitButton>

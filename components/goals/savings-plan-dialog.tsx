@@ -18,7 +18,7 @@ function SavingsPlanForm({ monthlyPlan, onSaved }: { monthlyPlan: number; onSave
         inputMode="decimal"
         placeholder="0"
         autoFocus
-        hint="Con esto Mulita calcula cuánto le toca a cada meta y cuándo llegás."
+        hint="Vale desde este mes en adelante. Con esto Mulita calcula cuánto le toca a cada meta y cuándo llegás."
         defaultValue={monthlyPlan > 0 ? centsToInput(monthlyPlan) : undefined}
         errors={state.fieldErrors?.monthlySavingsPlan}
         className="font-display text-2xl font-bold"

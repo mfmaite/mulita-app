@@ -3,8 +3,10 @@
 import { and, eq, ne, sum } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { savingsGoals, userSettings } from "@/lib/db/schema";
+import { savingsGoals } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
+import { currentMonth } from "@/lib/month";
+import { savePlanFrom } from "@/lib/plans/queries";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
 import { goalSchema, savingsPlanSchema, type GoalField, type SavingsPlanField } from "./schemas";
 
@@ -65,11 +67,7 @@ export async function setSavingsPlan(_: FormState<SavingsPlanField>, formData: F
     formData,
     fields: ["monthlySavingsPlan"] as const,
     schema: savingsPlanSchema,
-    save: ({ monthlySavingsPlan }, userId) =>
-      db
-        .insert(userSettings)
-        .values({ userId, monthlySavingsPlan })
-        .onConflictDoUpdate({ target: userSettings.userId, set: { monthlySavingsPlan } }),
+    save: ({ monthlySavingsPlan }, userId) => savePlanFrom(userId, currentMonth(), { savingsTarget: monthlySavingsPlan }),
     success: "Tá, ahorro mensual guardado.",
   });
 }
