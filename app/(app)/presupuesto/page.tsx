@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BudgetRow } from "@/components/budgets/budget-row";
 import { BudgetOverview } from "@/components/budgets/budget-overview";
 import { ExchangeRateCard } from "@/components/budgets/exchange-rate-card";
+import { UnexpectedIncomeCard } from "@/components/budgets/unexpected-income-card";
 import { MonthSelector } from "@/components/shell/month-selector";
 import { PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -33,6 +34,7 @@ export default async function BudgetPage({ searchParams }: PageProps<"/presupues
       ) : (
         <>
           <BudgetOverview summary={summary} plan={plan} month={month} />
+          {plan.unexpectedIncome > 0 && <UnexpectedIncomeCard amount={plan.unexpectedIncome} />}
           <ExchangeRateCard month={month} rate={rate} unconvertedUsd={unconvertedUsd} />
           {groups.map((group) => (
             <section key={group.title} className="space-y-2">

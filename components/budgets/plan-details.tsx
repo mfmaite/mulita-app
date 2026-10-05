@@ -5,13 +5,15 @@ import type { MonthPlan } from "@/lib/budgets/plan";
 import { ToAssignStatus } from "./to-assign-status";
 
 function incomeHint({ expectedIncome, usesRealIncome, unexpectedIncome }: MonthPlan) {
-  const base = !usesRealIncome ? "Lo que esperás ganar" : expectedIncome > 0 ? "Lo que entró, más de lo esperado" : "Lo que entró este mes";
-  if (unexpectedIncome <= 0) return base;
-  return (
-    <>
-      {base}, más <Money cents={unexpectedIncome} currency="UYU" /> inesperados
-    </>
-  );
+  if (unexpectedIncome > 0) {
+    return (
+      <>
+        Incluye <Money cents={unexpectedIncome} currency="UYU" /> inesperados
+      </>
+    );
+  }
+  if (!usesRealIncome) return "Lo que esperás ganar";
+  return expectedIncome > 0 ? "Lo que entró, más de lo esperado" : "Lo que entró este mes";
 }
 
 function toAssignHint(toAssign: number) {

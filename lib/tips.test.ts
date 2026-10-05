@@ -4,8 +4,8 @@ import { pickTip, splitUnexpectedIncome } from "./tips";
 const calm = { overBudget: [], unexpectedIncome: 0, hasBudget: true };
 
 describe("splitUnexpectedIncome", () => {
-  it("splits 50/30/20 and keeps every cent", () => {
-    expect(splitUnexpectedIncome(7932600)).toEqual({ savings: 3966300, planned: 2379780, treat: 1586520 });
+  it("splits 50/30/20 in whole pesos and keeps every cent", () => {
+    expect(splitUnexpectedIncome(7932600)).toEqual({ savings: 3966300, planned: 2379800, treat: 1586500 });
     const odd = splitUnexpectedIncome(1001);
     expect(odd.savings + odd.planned + odd.treat).toBe(1001);
   });
