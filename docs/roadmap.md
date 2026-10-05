@@ -20,7 +20,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [x] Tarjetas de crédito con día de cierre (editable para un mes puntual)
 - [x] Compras en cuotas en pesos y dólares, con primer mes de cobro sugerido
 - [x] Pago de tarjeta desde una cuenta débito
-- [ ] Metas de ahorro repartidas por porcentaje, con fecha estimada
+- [x] Metas de ahorro repartidas por porcentaje, con fecha estimada
 - [ ] Dashboard: presupuesto vs real, cuotas proyectadas, saldo de caja y tasa de ahorro
 - [ ] Tips de Mulita para ordenar las cuentas
 
