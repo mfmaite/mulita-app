@@ -16,6 +16,7 @@ import { centsToInput, evaluateAmount } from "@/lib/money";
 import { createMovement, updateMovement } from "@/lib/movements/actions";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
 import { CardPurchaseFields } from "./card-purchase-fields";
+import { SourceSelect } from "./source-select";
 
 const typeOptions = [
   { value: "expense", label: "Gasto" },
@@ -135,24 +136,12 @@ export function MovementForm({ data, movement, onSaved }: MovementFormProps) {
         className="font-display text-2xl font-bold"
       />
       <Field label={sourceLabel} errors={state.fieldErrors?.source}>
-        <Select name="source" value={source} onChange={(event) => setSource(event.target.value)}>
-          <optgroup label="Cuentas">
-            {accounts.map((option) => (
-              <option key={option.id} value={`account:${option.id}`}>
-                {option.name}
-              </option>
-            ))}
-          </optgroup>
-          {type === "expense" && cards.length > 0 && (
-            <optgroup label="Tarjetas">
-              {cards.map((option) => (
-                <option key={option.id} value={`card:${option.id}`}>
-                  {option.name}
-                </option>
-              ))}
-            </optgroup>
-          )}
-        </Select>
+        <SourceSelect
+          accounts={accounts}
+          cards={type === "expense" ? cards : []}
+          value={source}
+          onChange={setSource}
+        />
       </Field>
       {card && (
         <CardPurchaseFields

@@ -5,3 +5,4 @@ export * from "./movements";
 export * from "./budgets";
 export * from "./cards";
 export * from "./goals";
+export * from "./fixed";

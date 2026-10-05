@@ -71,6 +71,13 @@
       "when": 1791218145024,
       "tag": "0009_savings_goals",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791222701372,
+      "tag": "0010_fixed_commitments",
+      "breakpoints": true
     }
   ]
 }
