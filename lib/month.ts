@@ -1,7 +1,8 @@
 import { TZDate } from "@date-fns/tz";
 import { addMonths, format, getYear, isValid, parse } from "date-fns";
+import { timeZone } from "@/lib/dates";
+import { capitalize } from "@/lib/text";
 
-const timeZone = "America/Montevideo";
 const monthFormat = "yyyy-MM";
 const monthName = new Intl.DateTimeFormat("es-UY", { month: "long" });
 
@@ -28,8 +29,11 @@ export function shiftMonth(month: string, amount: number) {
   return format(addMonths(toDate(month), amount), monthFormat);
 }
 
+export function monthRange(month: string) {
+  return { start: `${month}-01`, end: `${shiftMonth(month, 1)}-01` };
+}
+
 export function formatMonth(month: string) {
   const date = toDate(month);
-  const name = monthName.format(date);
-  return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${getYear(date)}`;
+  return `${capitalize(monthName.format(date))} ${getYear(date)}`;
 }

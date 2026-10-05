@@ -28,7 +28,13 @@ export function CategoryForm({ category, onSaved }: CategoryFormProps) {
 
   return (
     <form action={action} noValidate className="space-y-4">
-      <SegmentedControl label="Tipo" name="kind" options={kindOptions} defaultValue={values.kind ?? "expense"} />
+      <SegmentedControl
+        label="Tipo"
+        name="kind"
+        options={kindOptions}
+        defaultValue={values.kind ?? "expense"}
+        errors={state.fieldErrors?.kind}
+      />
       <TextField
         label="Nombre"
         name="name"

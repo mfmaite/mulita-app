@@ -8,19 +8,17 @@ import { Button } from "./button";
 type ConfirmDeleteButtonProps = {
   label: string;
   question: string;
-  successMessage: string;
-  onConfirm: () => Promise<void>;
+  onConfirm: () => Promise<string>;
   onDeleted: () => void;
 };
 
-export function ConfirmDeleteButton({ label, question, successMessage, onConfirm, onDeleted }: ConfirmDeleteButtonProps) {
+export function ConfirmDeleteButton({ label, question, onConfirm, onDeleted }: ConfirmDeleteButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const confirm = () =>
     startTransition(async () => {
-      await onConfirm();
-      toast.success(successMessage);
+      toast.success(await onConfirm());
       onDeleted();
     });
 

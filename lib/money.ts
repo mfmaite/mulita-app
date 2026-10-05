@@ -3,8 +3,10 @@ import type { Currency } from "@/lib/db/schema";
 
 const formatters = new Map<string, Intl.NumberFormat>();
 
-function formatterFor(currency: Currency, fractionDigits: number) {
-  const key = `${currency}-${fractionDigits}`;
+type FormatOptions = { signed?: boolean };
+
+function formatterFor(currency: Currency, fractionDigits: number, { signed = false }: FormatOptions) {
+  const key = `${currency}-${fractionDigits}-${signed}`;
   if (!formatters.has(key)) {
     formatters.set(
       key,
@@ -13,14 +15,15 @@ function formatterFor(currency: Currency, fractionDigits: number) {
         currency,
         minimumFractionDigits: fractionDigits,
         maximumFractionDigits: fractionDigits,
+        signDisplay: signed ? "exceptZero" : "auto",
       }),
     );
   }
   return formatters.get(key)!;
 }
 
-export function formatMoney(cents: number, currency: Currency) {
-  return formatterFor(currency, cents % 100 === 0 ? 0 : 2).format(cents / 100);
+export function formatMoney(cents: number, currency: Currency, options: FormatOptions = {}) {
+  return formatterFor(currency, cents % 100 === 0 ? 0 : 2, options).format(cents / 100);
 }
 
 const thousandsWithDots = /^\d{1,3}(\.\d{3})+$/;

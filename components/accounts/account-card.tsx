@@ -1,9 +1,9 @@
 import { Money } from "@/components/ui/money";
-import type { Account } from "@/lib/db/schema";
+import type { AccountWithBalance } from "@/lib/accounts/queries";
 import { AccountDialog } from "./account-dialog";
 import { accountTypeMeta, currencyLabels } from "./account-meta";
 
-export function AccountCard({ account }: { account: Account }) {
+export function AccountCard({ account }: { account: AccountWithBalance }) {
   const { label, icon: Icon } = accountTypeMeta[account.type];
 
   return (
@@ -18,7 +18,7 @@ export function AccountCard({ account }: { account: Account }) {
         </p>
       </div>
       <Money
-        cents={account.initialBalance}
+        cents={account.balance}
         currency={account.currency}
         className="shrink-0 font-display font-bold sm:text-lg"
       />

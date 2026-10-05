@@ -5,13 +5,21 @@ import { requireSession } from "@/lib/auth/session";
 import { isUniqueViolation } from "@/lib/db/errors";
 import { formValues, invalidForm, type FormState } from "@/lib/forms";
 
+export class FieldError extends Error {
+  constructor(
+    readonly field: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
 type SaveFormOptions<Field extends string, Data> = {
   formData: FormData;
   fields: readonly Field[];
   schema: z.ZodType<Data>;
   save: (data: Data, userId: string) => Promise<unknown>;
   success: string;
-  revalidate: string;
   duplicate?: { field: Field; message: string };
 };
 
@@ -21,7 +29,6 @@ export async function saveForm<Field extends string, Data>({
   schema,
   save,
   success,
-  revalidate,
   duplicate,
 }: SaveFormOptions<Field, Data>): Promise<FormState<Field>> {
   const values = formValues(formData, fields);
@@ -33,10 +40,20 @@ export async function saveForm<Field extends string, Data>({
   try {
     await save(parsed.data, user.id);
   } catch (error) {
-    if (!duplicate || !isUniqueViolation(error)) throw error;
-    return { values, fieldErrors: { [duplicate.field]: [duplicate.message] } as FormState<Field>["fieldErrors"] };
+    const fieldError =
+      error instanceof FieldError
+        ? error
+        : duplicate && isUniqueViolation(error)
+          ? new FieldError(duplicate.field, duplicate.message)
+          : undefined;
+    if (!fieldError) throw error;
+    return { values, fieldErrors: { [fieldError.field]: [fieldError.message] } as FormState<Field>["fieldErrors"] };
   }
 
-  revalidatePath(revalidate);
+  revalidateApp();
   return { success };
+}
+
+export function revalidateApp() {
+  revalidatePath("/", "layout");
 }

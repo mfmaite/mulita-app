@@ -12,6 +12,11 @@ describe("formatMoney", () => {
     expect(formatMoney(4125, "USD")).toBe(`US$${nbsp}41,25`);
     expect(formatMoney(-123450, "UYU")).toBe(`-$${nbsp}1.234,50`);
   });
+
+  it("can show the sign of positive amounts", () => {
+    expect(formatMoney(12997600, "UYU", { signed: true })).toBe(`+$${nbsp}129.976`);
+    expect(formatMoney(-80300, "UYU", { signed: true })).toBe(`-$${nbsp}803`);
+  });
 });
 
 describe("parseMoney", () => {

@@ -44,6 +44,7 @@ export function AccountForm({ account, onSaved }: AccountFormProps) {
         name="currency"
         options={currencyOptions}
         defaultValue={values.currency ?? "UYU"}
+        errors={state.fieldErrors?.currency}
       />
       <TextField
         label="Saldo inicial"

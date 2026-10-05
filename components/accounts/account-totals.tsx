@@ -1,10 +1,11 @@
 import { Money } from "@/components/ui/money";
 import { totalsByCurrency } from "@/lib/accounts/totals";
-import { currencies, type Account } from "@/lib/db/schema";
+import type { AccountWithBalance } from "@/lib/accounts/queries";
+import { currencies } from "@/lib/db/schema";
 import { currencyLabels } from "./account-meta";
 
-export function AccountTotals({ accounts }: { accounts: Account[] }) {
-  const totals = totalsByCurrency(accounts.map(({ currency, initialBalance }) => ({ currency, amount: initialBalance })));
+export function AccountTotals({ accounts }: { accounts: AccountWithBalance[] }) {
+  const totals = totalsByCurrency(accounts.map(({ currency, balance }) => ({ currency, amount: balance })));
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3">

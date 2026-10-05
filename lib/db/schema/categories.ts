@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { users } from "./auth";
-import { id, timestamps } from "./columns";
+import { archivedAt, id, timestamps } from "./columns";
 
 export const categoryKinds = ["expense", "income"] as const;
 
@@ -17,9 +17,12 @@ export const categories = pgTable(
     kind: categoryKind().notNull(),
     name: text().notNull(),
     description: text(),
+    archivedAt: archivedAt(),
     ...timestamps,
   },
-  (table) => [uniqueIndex("categories_user_id_name_idx").on(table.userId, sql`lower(${table.name})`)],
+  (table) => [uniqueIndex("categories_user_id_name_idx")
+      .on(table.userId, sql`lower(${table.name})`)
+      .where(sql`${table.archivedAt} is null`)],
 );
 
 export type Category = typeof categories.$inferSelect;

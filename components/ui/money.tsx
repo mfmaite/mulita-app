@@ -5,13 +5,14 @@ import { formatMoney } from "@/lib/money";
 type MoneyProps = {
   cents: number;
   currency: Currency;
+  signed?: boolean;
   className?: string;
 };
 
-export function Money({ cents, currency, className }: MoneyProps) {
+export function Money({ cents, currency, signed, className }: MoneyProps) {
   return (
     <span className={cn("tabular-nums", cents < 0 && "text-danger-strong", className)}>
-      {formatMoney(cents, currency)}
+      {formatMoney(cents, currency, { signed })}
     </span>
   );
 }

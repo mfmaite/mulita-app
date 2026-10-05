@@ -11,7 +11,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [x] Shell responsive con selector de mes
 - [x] Categorías con set por defecto y descripción
 - [x] Cuentas en pesos y dólares con saldo inicial
-- [ ] Movimientos: ingresos y gastos
+- [x] Movimientos: ingresos y gastos
 - [ ] Movimientos: transferencias y cuadrar saldo
 - [ ] Presupuestos por categoría y cotización mensual del dólar
 

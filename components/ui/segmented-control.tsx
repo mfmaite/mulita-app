@@ -11,9 +11,11 @@ type SegmentedControlProps = {
   name: string;
   options: Option[];
   defaultValue?: string;
+  errors?: string[];
+  onValueChange?: (value: string) => void;
 };
 
-export function SegmentedControl({ label, name, options, defaultValue }: SegmentedControlProps) {
+export function SegmentedControl({ label, name, options, defaultValue, errors, onValueChange }: SegmentedControlProps) {
   return (
     <fieldset className="space-y-1.5">
       <legend className="text-sm font-medium">{label}</legend>
@@ -31,12 +33,14 @@ export function SegmentedControl({ label, name, options, defaultValue }: Segment
               name={name}
               value={option.value}
               defaultChecked={option.value === defaultValue}
+              onChange={(event) => onValueChange?.(event.target.value)}
               className="sr-only"
             />
             {option.label}
           </label>
         ))}
       </div>
+      {errors?.[0] && <p className="text-sm text-danger-strong">{errors[0]}</p>}
     </fieldset>
   );
 }

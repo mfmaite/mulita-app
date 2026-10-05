@@ -1,5 +1,7 @@
 import { timestamp, uuid } from "drizzle-orm/pg-core";
 
+export const archivedAt = () => timestamp({ withTimezone: true });
+
 export const id = () => uuid().defaultRandom().primaryKey();
 
 export const timestamps = {
