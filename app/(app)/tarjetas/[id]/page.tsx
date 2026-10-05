@@ -1,4 +1,6 @@
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StatementLines } from "@/components/cards/statement-lines";
 import { StatementProjection } from "@/components/cards/statement-projection";
 import { StatementSummary } from "@/components/cards/statement-summary";
@@ -20,6 +22,13 @@ export default async function CardStatementPage({ params, searchParams }: PagePr
 
   return (
     <>
+      <Link
+        href="/tarjetas"
+        className="flex w-fit items-center gap-1 text-sm font-semibold text-primary underline-offset-4 hover:underline"
+      >
+        <ArrowLeft className="size-4" aria-hidden />
+        Todas mis tarjetas
+      </Link>
       <PageHeader title={card.name} description={`Resumen de ${formatMonth(month).toLowerCase()} · cierra el ${card.monthClosingDay}`}>
         <MonthSelector month={month} path={`/tarjetas/${card.id}`} />
       </PageHeader>

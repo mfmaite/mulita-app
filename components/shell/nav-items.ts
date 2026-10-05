@@ -12,6 +12,8 @@ export const navItems = {
 
 export type NavItemName = keyof typeof navItems;
 
+export type NavHrefs = Partial<Record<NavItemName, string>>;
+
 export const sidebarNav: NavItemName[] = ["home", "movements", "budget", "goals", "accounts", "cards", "categories"];
 export const moreNav: NavItemName[] = ["goals", "accounts", "cards", "categories"];
 
