@@ -12,6 +12,10 @@ export function isAccountInUse(id: string) {
   return hasMovements(or(eq(movements.accountId, id), eq(movements.destinationAccountId, id)));
 }
 
+export function isCardInUse(id: string) {
+  return hasMovements(eq(movements.cardId, id));
+}
+
 export function isCategoryInUse(id: string) {
   return hasMovements(eq(movements.categoryId, id));
 }

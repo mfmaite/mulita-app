@@ -31,6 +31,10 @@ describe("balanceFrom", () => {
     expect(balanceFrom(0, { transferIn: 708600 })).toBe(708600);
   });
 
+  it("subtracts card payments from the account", () => {
+    expect(balanceFrom(1000000, { card_payment: 3967900 })).toBe(-2967900);
+  });
+
   it("applies negative adjustments", () => {
     expect(balanceFrom(100000, { adjustment: -71200 })).toBe(28800);
   });

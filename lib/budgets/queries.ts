@@ -3,6 +3,8 @@ import { and, asc, desc, eq, gte, isNull, lt, lte, sum } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { accounts, budgets, categories, exchangeRates, movements } from "@/lib/db/schema";
+import { listCardPurchases } from "@/lib/cards/queries";
+import { installmentsInMonth } from "@/lib/cards/statement";
 import { monthRange } from "@/lib/month";
 import { spentByCategory, usageOf } from "./calculations";
 
@@ -10,7 +12,7 @@ export async function getBudgetMonth(month: string) {
   const { user } = await requireSession();
   const { start, end } = monthRange(month);
 
-  const [categoryRows, budgetRows, [rate], spentRows] = await Promise.all([
+  const [categoryRows, budgetRows, [rate], directSpent, cardPurchases] = await Promise.all([
     db
       .select({ id: categories.id, name: categories.name })
       .from(categories)
@@ -40,7 +42,15 @@ export async function getBudgetMonth(month: string) {
         ),
       )
       .groupBy(movements.categoryId, accounts.currency),
+    listCardPurchases(user.id),
   ]);
+
+  const installmentSpent = installmentsInMonth(cardPurchases, month).map(({ purchase, amount }) => ({
+    categoryId: purchase.categoryId,
+    currency: purchase.currency,
+    total: amount,
+  }));
+  const spentRows = [...directSpent, ...installmentSpent];
 
   const budgetByCategory = new Map(budgetRows.map(({ categoryId, amount }) => [categoryId, amount]));
   const { totals, unconvertedUsd } = spentByCategory(spentRows, rate?.usdToUyu);

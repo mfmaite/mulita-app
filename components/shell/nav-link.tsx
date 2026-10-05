@@ -15,16 +15,18 @@ const variants = {
 type NavLinkProps = {
   name: NavItemName;
   variant: keyof typeof variants;
+  href?: string;
 };
 
-export function NavLink({ name, variant }: NavLinkProps) {
+export function NavLink({ name, variant, href: hrefOverride }: NavLinkProps) {
   const pathname = usePathname();
   const month = useSearchParams().get(monthParam);
   const { href, label, icon: Icon, monthly } = navItems[name];
+  const target = hrefOverride ?? href;
 
   return (
     <Link
-      href={monthly && month ? `${href}?${monthParam}=${month}` : href}
+      href={monthly && month ? `${target}?${monthParam}=${month}` : target}
       aria-current={isActivePath(pathname, href) ? "page" : undefined}
       className={cn("transition-colors", variants[variant])}
     >

@@ -17,14 +17,23 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 
 ## Etapa 2: Tarjetas y metas
 
-- [ ] Tarjetas de crédito con día de cierre (editable para un mes puntual)
-- [ ] Compras en cuotas en pesos y dólares, con primer mes de cobro sugerido
-- [ ] Pago de tarjeta desde una cuenta débito
-- [ ] Metas de ahorro repartidas por porcentaje, con fecha estimada
-- [ ] Dashboard: presupuesto vs real, cuotas proyectadas, saldo de caja y tasa de ahorro
-- [ ] Tips de Mulita para ordenar las cuentas
+- [x] Tarjetas de crédito con día de cierre (editable para un mes puntual)
+- [x] Compras en cuotas en pesos y dólares, con primer mes de cobro sugerido
+- [x] Pago de tarjeta desde una cuenta débito
+- [x] Metas de ahorro repartidas por porcentaje, con fecha estimada
+- [x] Dashboard: presupuesto vs real, cuotas proyectadas, saldo de caja y tasa de ahorro
+- [x] Tips de Mulita para ordenar las cuentas
+- [x] Con una sola tarjeta, "Tarjetas" lleva directo a su resumen
 
 ## Etapa 3: Fijos
 
 - [ ] Compromisos fijos con periodicidad
 - [ ] Lo que falta pagar este mes
+
+## Etapa 4: Presupuesto guiado
+
+- [ ] Onboarding: cuánto ganás y cuánto querés ahorrar por mes
+- [ ] Ahorro como parte del presupuesto: objetivo del mes contra lo ahorrado de verdad
+- [ ] Armar el presupuesto a partir de eso: lo que queda para gastar se reparte entre categorías, con lo que falta asignar a la vista
+- [ ] Aviso cuando el presupuesto más el ahorro superan lo que ganás
+- [ ] Ingresos inesperados del mes: suman a lo disponible de ese mes, con la sugerencia de repartirlos 50% ahorro, 30% gasto planeado y 20% gusto libre

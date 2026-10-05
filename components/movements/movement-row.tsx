@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import { Money } from "@/components/ui/money";
+import { installmentAmounts } from "@/lib/cards/installments";
 import { cn } from "@/lib/cn";
+import { formatMoney } from "@/lib/money";
 import { signedAmount } from "@/lib/movements/balance";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
 import { EditMovementButton } from "./edit-movement-button";
@@ -19,12 +21,21 @@ function describe(movement: MonthMovement) {
       };
     case "adjustment":
       return { title: movement.detail ?? "Cuadre de saldo", subtitle: movement.accountName };
+    case "card_payment":
+      return { title: movement.detail ?? `Pago de ${movement.cardName}`, subtitle: movement.accountName };
     default:
       return {
         title: movement.detail ?? movement.categoryName ?? "Sin categoría",
-        subtitle: [movement.detail && movement.categoryName, movement.accountName].filter(Boolean).join(" · "),
+        subtitle: [movement.detail && movement.categoryName, movement.accountName ?? movement.cardName, installmentsLabel(movement)]
+          .filter(Boolean)
+          .join(" · "),
       };
   }
+}
+
+function installmentsLabel({ installments, amount, currency }: MonthMovement) {
+  if (!installments || installments < 2) return null;
+  return `${installments} cuotas de ${formatMoney(installmentAmounts(amount, installments)[0], currency)}`;
 }
 
 function TransferAmount({ movement }: { movement: MonthMovement }) {
