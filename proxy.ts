@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import { NextResponse, type NextRequest } from "next/server";
 
-const publicPaths = ["/ingresar", "/registro"];
+const publicPaths = ["/ingresar", "/registro", "/opengraph-image", "/apple-icon"];
 
 export function proxy(request: NextRequest) {
   const isPublic = publicPaths.includes(request.nextUrl.pathname);

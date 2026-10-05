@@ -41,3 +41,4 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 ## Mejoras
 
 - [x] Calculadora en el monto: se puede escribir la cuenta (por ejemplo 508,85+216,39) y guarda el resultado
+- [x] Vista previa linda al compartir el link: imagen, título y descripción
