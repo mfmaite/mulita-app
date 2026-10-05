@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { cardClosingOverrides, creditCards } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
 import { formatMonth, monthRange } from "@/lib/month";
+import { isCardInUse } from "@/lib/movements/usage";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
 import { cardSchema, closingOverrideSchema, type CardField, type ClosingOverrideField } from "./schemas";
 
@@ -41,6 +42,13 @@ export async function updateCard(id: string, _: CardState, formData: FormData) {
 
 export async function deleteCard(id: string) {
   const { user } = await requireSession();
+
+  if (await isCardInUse(id)) {
+    await db.update(creditCards).set({ archivedAt: new Date() }).where(ownCard(id, user.id));
+    revalidateApp();
+    return "La archivamos: tiene compras, así que la sacamos de la lista sin perder nada.";
+  }
+
   await db.delete(creditCards).where(ownCard(id, user.id));
   revalidateApp();
   return "Listo, la borramos.";

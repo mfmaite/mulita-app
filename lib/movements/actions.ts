@@ -6,7 +6,7 @@ import { requireSession } from "@/lib/auth/session";
 import { today } from "@/lib/dates";
 import { db } from "@/lib/db";
 import { activeOrCurrent } from "@/lib/db/conditions";
-import { accounts, categories, movements } from "@/lib/db/schema";
+import { accounts, categories, creditCards, movements } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
 import { movementFields, movementSchema, reconcileSchema, type MovementData, type MovementField, type ReconcileField } from "./schemas";
@@ -14,10 +14,14 @@ import { movementFields, movementSchema, reconcileSchema, type MovementData, typ
 type MovementState = FormState<MovementField>;
 
 type CurrentReferences = {
-  accountId: string;
+  accountId: string | null;
+  cardId: string | null;
   categoryId: string | null;
   destinationAccountId: string | null;
 };
+
+const noCardPurchase = { cardId: null, currency: null, installments: null, firstBillingMonth: null };
+const noTransfer = { destinationAccountId: null, destinationAmount: null };
 
 async function findAccount(id: string, userId: string, currentIds: (string | null | undefined)[]) {
   const [account] = await db
@@ -33,27 +37,21 @@ async function findAccount(id: string, userId: string, currentIds: (string | nul
   return account;
 }
 
-async function toRow(data: MovementData, userId: string, current?: CurrentReferences) {
-  const currentAccountIds = [current?.accountId, current?.destinationAccountId];
-  const account = await findAccount(data.accountId, userId, currentAccountIds);
-  if (!account) throw new FieldError("accountId", "Elegí una cuenta.");
+async function findCard(id: string, userId: string, currentId?: string | null) {
+  const [card] = await db
+    .select({ id: creditCards.id })
+    .from(creditCards)
+    .where(
+      and(
+        eq(creditCards.id, id),
+        eq(creditCards.userId, userId),
+        activeOrCurrent(creditCards.archivedAt, creditCards.id, currentId),
+      ),
+    );
+  return card;
+}
 
-  if (data.type === "transfer") {
-    const destination = await findAccount(data.destinationAccountId, userId, currentAccountIds);
-    if (!destination) throw new FieldError("destinationAccountId", "Elegí a qué cuenta va la plata.");
-
-    const sameCurrency = destination.currency === account.currency;
-    if (!sameCurrency && !data.destinationAmount) {
-      throw new FieldError("destinationAmount", "¿Cuánto llegó a la otra cuenta?");
-    }
-
-    return {
-      ...data,
-      categoryId: null,
-      destinationAmount: sameCurrency ? data.amount : data.destinationAmount,
-    };
-  }
-
+async function assertCategory(data: Extract<MovementData, { categoryId: string }>, userId: string, current?: CurrentReferences) {
   const [category] = await db
     .select({ kind: categories.kind })
     .from(categories)
@@ -69,8 +67,47 @@ async function toRow(data: MovementData, userId: string, current?: CurrentRefere
   if (category.kind !== data.type) {
     throw new FieldError("categoryId", "Esa categoría no corresponde a este tipo de movimiento.");
   }
+}
 
-  return { ...data, destinationAccountId: null, destinationAmount: null };
+async function toRow(data: MovementData, userId: string, current?: CurrentReferences) {
+  const { source, ...fields } = data;
+
+  if (fields.type !== "transfer" && source.kind === "card") {
+    if (!(await findCard(source.id, userId, current?.cardId))) throw new FieldError("source", "Elegí con qué pagaste.");
+    await assertCategory(data as Extract<MovementData, { categoryId: string }>, userId, current);
+    return {
+      ...fields,
+      ...noTransfer,
+      accountId: null,
+      cardId: source.id,
+      firstBillingMonth: `${fields.firstBillingMonth}-01`,
+    };
+  }
+
+  const currentAccountIds = [current?.accountId, current?.destinationAccountId];
+  const account = await findAccount(source.id, userId, currentAccountIds);
+  if (!account) throw new FieldError("source", "Elegí una cuenta.");
+
+  if (fields.type === "transfer") {
+    const destination = await findAccount(fields.destinationAccountId, userId, currentAccountIds);
+    if (!destination) throw new FieldError("destinationAccountId", "Elegí a qué cuenta va la plata.");
+
+    const sameCurrency = destination.currency === account.currency;
+    if (!sameCurrency && !fields.destinationAmount) {
+      throw new FieldError("destinationAmount", "¿Cuánto llegó a la otra cuenta?");
+    }
+
+    return {
+      ...fields,
+      ...noCardPurchase,
+      accountId: account.id,
+      categoryId: null,
+      destinationAmount: sameCurrency ? fields.amount : fields.destinationAmount,
+    };
+  }
+
+  await assertCategory(data as Extract<MovementData, { categoryId: string }>, userId, current);
+  return { ...fields, ...noTransfer, ...noCardPurchase, accountId: account.id };
 }
 
 function ownMovement(id: string, userId: string) {
@@ -98,6 +135,7 @@ export async function updateMovement(id: string, _: MovementState, formData: For
       const [current] = await db
         .select({
           accountId: movements.accountId,
+          cardId: movements.cardId,
           categoryId: movements.categoryId,
           destinationAccountId: movements.destinationAccountId,
         })
