@@ -85,6 +85,13 @@
       "when": 1791223451353,
       "tag": "0011_fixed_payments",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791226523134,
+      "tag": "0012_monthly_plans",
+      "breakpoints": true
     }
   ]
 }
