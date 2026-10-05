@@ -13,7 +13,7 @@ export default async function WelcomePage() {
     <>
       <PageHeader
         title={data.onboarded ? "Armemos tu presupuesto" : "¡Arrancamos!"}
-        description="Tres preguntas y quedás con las cuentas claras, y tá."
+        description="Tres preguntas y quedás con las cuentas claras."
       >
         <LeaveOnboarding onboarded={data.onboarded} />
       </PageHeader>

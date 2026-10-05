@@ -1,5 +1,4 @@
 import { Money } from "@/components/ui/money";
-import { ProgressBar } from "@/components/ui/progress-bar";
 import { Stat } from "@/components/ui/stat";
 import { hasPlan, type MonthPlan } from "@/lib/budgets/plan";
 import { ToAssignStatus } from "./to-assign-status";
@@ -34,10 +33,12 @@ export function PlanDetails({ plan }: { plan: MonthPlan }) {
     <>
       <div className="grid grid-cols-3 gap-3 sm:gap-4">
         <Stat label="Ingreso" cents={plan.income} hint={incomeHint(plan)} />
-        <div className="space-y-1.5">
-          <Stat label="Ahorro" cents={plan.savingsTarget} hint={<>Ahorraste <Money cents={plan.saved} currency="UYU" /></>} />
-          {plan.savingsPercent !== null && <ProgressBar percent={plan.savingsPercent} level="ok" className="h-1.5" />}
-        </div>
+        <Stat
+          label="Ahorro"
+          cents={plan.savingsTarget}
+          hint={<>Ahorraste <Money cents={plan.saved} currency="UYU" /></>}
+          progress={plan.savingsPercent}
+        />
         <Stat label="Sin asignar" cents={plan.toAssign} hint={toAssignHint(plan.toAssign)} />
       </div>
       {plan.toAssign < 0 && <ToAssignStatus toAssign={plan.toAssign} />}

@@ -50,6 +50,7 @@ export async function getDashboard(month: string) {
     },
     budget: {
       summary: budget.summary,
+      plan: budget.plan,
       highlights: budget.rows
         .filter((row) => row.budget > 0)
         .toSorted((a, b) => (b.percent ?? 0) - (a.percent ?? 0))
