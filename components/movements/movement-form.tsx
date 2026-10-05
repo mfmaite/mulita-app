@@ -12,10 +12,11 @@ import { TextField } from "@/components/ui/text-field";
 import { useFormAction } from "@/components/ui/use-form-action";
 import { today } from "@/lib/dates";
 import type { Currency, MovementType } from "@/lib/db/schema";
-import { centsToInput, evaluateAmount } from "@/lib/money";
+import { centsToInput, currencySymbols, evaluateAmount } from "@/lib/money";
 import { createMovement, updateMovement } from "@/lib/movements/actions";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
 import { CardPurchaseFields } from "./card-purchase-fields";
+import { SourceSelect } from "./source-select";
 
 const typeOptions = [
   { value: "expense", label: "Gasto" },
@@ -23,7 +24,6 @@ const typeOptions = [
   { value: "transfer", label: "Transferencia" },
 ];
 
-const currencySymbols: Record<Currency, string> = { UYU: "$", USD: "US$" };
 
 type AccountOption = MovementFormData["accounts"][number];
 type CardOption = MovementFormData["cards"][number];
@@ -135,24 +135,12 @@ export function MovementForm({ data, movement, onSaved }: MovementFormProps) {
         className="font-display text-2xl font-bold"
       />
       <Field label={sourceLabel} errors={state.fieldErrors?.source}>
-        <Select name="source" value={source} onChange={(event) => setSource(event.target.value)}>
-          <optgroup label="Cuentas">
-            {accounts.map((option) => (
-              <option key={option.id} value={`account:${option.id}`}>
-                {option.name}
-              </option>
-            ))}
-          </optgroup>
-          {type === "expense" && cards.length > 0 && (
-            <optgroup label="Tarjetas">
-              {cards.map((option) => (
-                <option key={option.id} value={`card:${option.id}`}>
-                  {option.name}
-                </option>
-              ))}
-            </optgroup>
-          )}
-        </Select>
+        <SourceSelect
+          accounts={accounts}
+          cards={type === "expense" ? cards : []}
+          value={source}
+          onChange={setSource}
+        />
       </Field>
       {card && (
         <CardPurchaseFields

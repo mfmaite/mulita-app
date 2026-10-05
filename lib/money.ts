@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { Currency } from "@/lib/db/schema";
 
+export const currencySymbols: Record<Currency, string> = { UYU: "$", USD: "US$" };
+
 const formatters = new Map<string, Intl.NumberFormat>();
 
 type FormatOptions = { signed?: boolean };

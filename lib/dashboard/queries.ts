@@ -10,6 +10,7 @@ import { monthTotals, totalsByCurrency } from "@/lib/cards/statement";
 import { db } from "@/lib/db";
 import { dayOfYear } from "@/lib/dates";
 import { accounts, categories, exchangeRates, movements } from "@/lib/db/schema";
+import { getFixedMonth } from "@/lib/fixed/queries";
 import { monthRange, shiftMonth } from "@/lib/month";
 import { pickTip } from "@/lib/tips";
 import { monthSummary } from "./summary";
@@ -67,13 +68,14 @@ async function rateFor(userId: string, month: string) {
 export async function getDashboard(month: string) {
   const { user } = await requireSession();
 
-  const [accountRows, totalsRows, purchases, rate, budget, unexpected] = await Promise.all([
+  const [accountRows, totalsRows, purchases, rate, budget, unexpected, fixedMonth] = await Promise.all([
     accountsWithBalance(user.id),
     monthMovementTotals(user.id, month),
     listCardPurchases(user.id),
     rateFor(user.id, month),
     getBudgetMonth(month),
     unexpectedIncomeRows(user.id, month),
+    getFixedMonth(month),
   ]);
 
   const installmentsThisMonth = monthTotals(purchases, month);
@@ -97,6 +99,10 @@ export async function getDashboard(month: string) {
     ),
     summary: monthSummary(totalsRows, installmentsThisMonth, rate),
     installments: { thisMonth: installmentsThisMonth, nextMonth: monthTotals(purchases, shiftMonth(month, 1)) },
+    fixed: {
+      totals: fixedMonth.totals,
+      pending: fixedMonth.due.filter(({ payment }) => !payment).slice(0, 3),
+    },
     budget: {
       summary: budget.summary,
       highlights: budget.rows

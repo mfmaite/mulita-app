@@ -7,7 +7,7 @@ const amount = moneyField("Ese monto no se entiende. Probá con algo como 1.500 
   "El monto tiene que ser mayor a cero.",
 );
 
-const source = z
+export const sourceField = z
   .string()
   .regex(/^(account|card):[0-9a-f-]{36}$/i, "Elegí de dónde sale la plata.")
   .transform((value) => {
@@ -15,12 +15,13 @@ const source = z
     return { kind: kind as "account" | "card", id };
   });
 
-const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Elegí un mes.");
 const empty = <Value>(fallback: Value) => z.literal("").transform(() => fallback);
+
+export const monthField = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Elegí un mes.");
 
 const common = {
   amount,
-  source,
+  source: sourceField,
   date: z.iso.date("Poné una fecha válida."),
   detail: z
     .string()
@@ -38,7 +39,7 @@ const entrySchema = z.object({
     empty(1),
     z.coerce.number().int("Poné un número de cuotas.").min(1, "Al menos 1 cuota.").max(48, "Hasta 48 cuotas."),
   ]),
-  firstBillingMonth: z.union([empty(null), month]),
+  firstBillingMonth: z.union([empty(null), monthField]),
 });
 
 const transferSchema = z.object({

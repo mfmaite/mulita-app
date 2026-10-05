@@ -2,6 +2,7 @@ import { Wallet } from "lucide-react";
 import Link from "next/link";
 import { BudgetCard } from "@/components/dashboard/budget-card";
 import { CashCard } from "@/components/dashboard/cash-card";
+import { FixedCard } from "@/components/dashboard/fixed-card";
 import { InstallmentsCard } from "@/components/dashboard/installments-card";
 import { MonthCard } from "@/components/dashboard/month-card";
 import { TipCard } from "@/components/dashboard/tip-card";
@@ -27,8 +28,9 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
           <TipCard tip={dashboard.tip} className="lg:col-span-2" />
           <CashCard cash={dashboard.cash} />
           <MonthCard summary={dashboard.summary} month={month} />
+          <FixedCard fixed={dashboard.fixed} month={month} />
           <BudgetCard budget={dashboard.budget} month={month} />
-          <InstallmentsCard installments={dashboard.installments} />
+          <InstallmentsCard installments={dashboard.installments} className="lg:col-span-2" />
         </div>
       ) : (
         <EmptyState
