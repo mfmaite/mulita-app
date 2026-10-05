@@ -47,6 +47,20 @@
   --color-primary: var(--color-green-700);
   --color-primary-hover: var(--color-green-800);
   --color-on-primary: var(--color-cream-50);
+
+  --animate-splash: splash 1.8s ease-in forwards;
+
+  @keyframes splash {
+    0%,
+    75% {
+      opacity: 1;
+      visibility: visible;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
 }
 
 @theme inline {
