@@ -28,3 +28,10 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 
 - [ ] Compromisos fijos con periodicidad
 - [ ] Lo que falta pagar este mes
+
+## Etapa 4: Presupuesto guiado
+
+- [ ] Onboarding: cuánto ganás y cuánto querés ahorrar por mes
+- [ ] Ahorro como parte del presupuesto: objetivo del mes contra lo ahorrado de verdad
+- [ ] Armar el presupuesto a partir de eso: lo que queda para gastar se reparte entre categorías, con lo que falta asignar a la vista
+- [ ] Aviso cuando el presupuesto más el ahorro superan lo que ganás
