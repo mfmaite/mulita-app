@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme static {
+  --color-green-50: oklch(0.97 0.012 173.5);
+  --color-green-100: oklch(0.93 0.022 173.5);
+  --color-green-200: oklch(0.86 0.036 173.5);
+  --color-green-300: oklch(0.77 0.05 173.5);
+  --color-green-400: oklch(0.66 0.06 173.5);
+  --color-green-500: oklch(0.55 0.065 173.5);
+  --color-green-600: oklch(0.46 0.068 173.5);
+  --color-green-700: oklch(0.38 0.0495 173.5);
+  --color-green-800: oklch(0.32 0.045 173.5);
+  --color-green-900: oklch(0.26 0.038 173.5);
+  --color-green-950: oklch(0.19 0.03 173.5);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-cream-50: oklch(0.985 0.008 85.7);
+  --color-cream-100: oklch(0.942 0.027 85.7);
+  --color-cream-200: oklch(0.9 0.04 85.7);
+  --color-cream-300: oklch(0.84 0.05 85.7);
+  --color-cream-400: oklch(0.76 0.055 85.7);
+  --color-cream-500: oklch(0.66 0.055 85.7);
+  --color-cream-600: oklch(0.56 0.05 85.7);
+  --color-cream-700: oklch(0.47 0.042 85.7);
+  --color-cream-800: oklch(0.38 0.034 85.7);
+  --color-cream-900: oklch(0.3 0.026 85.7);
+  --color-cream-950: oklch(0.22 0.018 85.7);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-success: oklch(0.55 0.11 155);
+  --color-success-soft: oklch(0.94 0.035 155);
+  --color-success-strong: oklch(0.4 0.1 155);
+  --color-warning: oklch(0.74 0.14 75);
+  --color-warning-soft: oklch(0.95 0.045 80);
+  --color-warning-strong: oklch(0.48 0.11 65);
+  --color-danger: oklch(0.55 0.16 32);
+  --color-danger-soft: oklch(0.94 0.04 32);
+  --color-danger-strong: oklch(0.42 0.15 32);
+  --color-info: oklch(0.55 0.08 235);
+  --color-info-soft: oklch(0.94 0.025 235);
+  --color-info-strong: oklch(0.4 0.08 235);
+
+  --color-background: var(--color-cream-50);
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: var(--color-cream-100);
+  --color-foreground: var(--color-green-950);
+  --color-muted: var(--color-cream-700);
+  --color-border: var(--color-cream-200);
+  --color-primary: var(--color-green-700);
+  --color-primary-hover: var(--color-green-800);
+  --color-on-primary: var(--color-cream-50);
+
+  --animate-splash: splash 1.8s ease-in forwards;
+
+  @keyframes splash {
+    0%,
+    75% {
+      opacity: 1;
+      visibility: visible;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-baloo);
+}
+
+@layer base {
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+  }
 }
