@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { z } from "zod";
-import { invalidForm, type FormState } from "@/lib/forms";
+import { formValues, invalidForm, type FormState } from "@/lib/forms";
 import { auth } from ".";
 import { authErrorMessage } from "./errors";
 import { signInSchema, signUpSchema, type CredentialsField } from "./schemas";
@@ -15,7 +15,7 @@ async function submitCredentials<Data>(
   formData: FormData,
   submit: (body: Data) => Promise<unknown>,
 ): Promise<CredentialsState> {
-  const values = { name: formData.get("name")?.toString(), email: formData.get("email")?.toString() };
+  const values = formValues(formData, ["name", "email"]);
   const parsed = schema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return invalidForm(parsed.error, values);
 

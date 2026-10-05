@@ -6,6 +6,7 @@ const variants = {
   secondary: "bg-cream-200 text-green-800 hover:bg-cream-300",
   outline: "border border-cream-300 bg-surface text-foreground hover:bg-cream-100",
   ghost: "text-green-800 hover:bg-cream-100",
+  danger: "bg-danger text-cream-50 hover:bg-danger-strong",
 };
 
 export type ButtonProps = ComponentProps<"button"> & {
