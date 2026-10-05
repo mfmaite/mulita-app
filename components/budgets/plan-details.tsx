@@ -1,7 +1,7 @@
 import { Money } from "@/components/ui/money";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Stat } from "@/components/ui/stat";
-import type { MonthPlan } from "@/lib/budgets/plan";
+import { hasPlan, type MonthPlan } from "@/lib/budgets/plan";
 import { ToAssignStatus } from "./to-assign-status";
 
 function incomeHint({ expectedIncome, usesRealIncome, unexpectedIncome }: MonthPlan) {
@@ -22,7 +22,7 @@ function toAssignHint(toAssign: number) {
 }
 
 export function PlanDetails({ plan }: { plan: MonthPlan }) {
-  if (plan.income === 0 && plan.savingsTarget === 0) {
+  if (!hasPlan(plan)) {
     return (
       <p className="text-sm text-muted">
         Contale a Mulita cuánto ganás y cuánto querés ahorrar, y te dice cuánto te queda para repartir.

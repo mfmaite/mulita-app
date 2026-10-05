@@ -1,12 +1,15 @@
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import type { NavHrefs } from "@/components/shell/nav-items";
 import { Sidebar } from "@/components/shell/sidebar";
 import { requireSession } from "@/lib/auth/session";
 import { getMovementFormData } from "@/lib/movements/queries";
+import { isOnboarded } from "@/lib/onboarding/queries";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const [{ user }, movementFormData] = await Promise.all([requireSession(), getMovementFormData()]);
+  if (!(await isOnboarded(user.id))) redirect("/bienvenida");
   const [onlyCard] = movementFormData.cards;
   const navHrefs: NavHrefs = movementFormData.cards.length === 1 ? { cards: `/tarjetas/${onlyCard.id}` } : {};
 

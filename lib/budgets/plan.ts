@@ -27,3 +27,7 @@ export function monthPlan({ expectedIncome, income, unexpectedIncome, savingsTar
 }
 
 export type MonthPlan = ReturnType<typeof monthPlan>;
+
+export function hasPlan(plan: MonthPlan) {
+  return plan.income > 0 || plan.savingsTarget > 0;
+}
