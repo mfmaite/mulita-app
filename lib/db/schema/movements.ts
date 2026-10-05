@@ -1,9 +1,10 @@
-import { bigint, date, index, integer, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { bigint, date, index, integer, pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { accounts, currency } from "./accounts";
 import { users } from "./auth";
 import { creditCards } from "./cards";
 import { categories } from "./categories";
 import { id, timestamps } from "./columns";
+import { fixedCommitments } from "./fixed";
 
 export const movementTypes = ["income", "expense", "transfer", "adjustment", "card_payment"] as const;
 
@@ -28,6 +29,8 @@ export const movements = pgTable(
     destinationAccountId: uuid().references(() => accounts.id, { onDelete: "restrict" }),
     destinationAmount: bigint({ mode: "number" }),
     detail: text(),
+    fixedCommitmentId: uuid().references(() => fixedCommitments.id, { onDelete: "set null" }),
+    fixedMonth: date(),
     ...timestamps,
   },
   (table) => [
@@ -36,6 +39,7 @@ export const movements = pgTable(
     index("movements_category_id_idx").on(table.categoryId),
     index("movements_destination_account_id_idx").on(table.destinationAccountId),
     index("movements_card_id_idx").on(table.cardId),
+    uniqueIndex("movements_fixed_month_idx").on(table.fixedCommitmentId, table.fixedMonth),
   ],
 );
 

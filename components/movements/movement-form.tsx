@@ -12,7 +12,7 @@ import { TextField } from "@/components/ui/text-field";
 import { useFormAction } from "@/components/ui/use-form-action";
 import { today } from "@/lib/dates";
 import type { Currency, MovementType } from "@/lib/db/schema";
-import { centsToInput, evaluateAmount } from "@/lib/money";
+import { centsToInput, currencySymbols, evaluateAmount } from "@/lib/money";
 import { createMovement, updateMovement } from "@/lib/movements/actions";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
 import { CardPurchaseFields } from "./card-purchase-fields";
@@ -24,7 +24,6 @@ const typeOptions = [
   { value: "transfer", label: "Transferencia" },
 ];
 
-const currencySymbols: Record<Currency, string> = { UYU: "$", USD: "US$" };
 
 type AccountOption = MovementFormData["accounts"][number];
 type CardOption = MovementFormData["cards"][number];

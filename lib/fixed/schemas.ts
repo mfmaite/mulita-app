@@ -3,12 +3,14 @@ import { currencies, frequencies } from "@/lib/db/schema";
 import { moneyField } from "@/lib/money";
 import { monthField, sourceField } from "@/lib/movements/schemas";
 
+const amount = moneyField("Ese monto no se entiende. Probá con algo como 1.500 o 1.500,50.").refine(
+  (cents) => cents > 0,
+  "El monto tiene que ser mayor a cero.",
+);
+
 const common = {
   name: z.string().trim().min(1, "Ponele un nombre.").max(40, "Ese nombre es muy largo. Probá con uno más corto."),
-  amount: moneyField("Ese monto no se entiende. Probá con algo como 1.500 o 1.500,50.").refine(
-    (cents) => cents > 0,
-    "El monto tiene que ser mayor a cero.",
-  ),
+  amount,
   variableAmount: z.string().transform((value) => value === "on"),
   dueDay: z.coerce
     .number("Poné un día entre 1 y 31.")
@@ -78,3 +80,14 @@ export const fixedFields = [
 
 export type FixedField = (typeof fixedFields)[number];
 export type FixedData = z.output<typeof fixedSchema>;
+
+export const payFixedSchema = z.object({
+  amount,
+  date: z.iso.date("Poné una fecha válida."),
+  destinationAmount: z.union([z.literal("").transform(() => null), amount]),
+});
+
+export const payFixedFields = ["amount", "date", "destinationAmount"] as const;
+
+export type PayFixedField = (typeof payFixedFields)[number];
+export type PayFixedData = z.output<typeof payFixedSchema>;

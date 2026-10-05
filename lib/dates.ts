@@ -17,3 +17,7 @@ export function dayOfYear() {
 export function formatDay(date: string) {
   return capitalize(dayFormatter.format(parseISO(date)));
 }
+
+export function formatShortDay(date: string) {
+  return format(parseISO(date), "d/M");
+}

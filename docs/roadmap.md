@@ -28,7 +28,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 ## Etapa 3: Fijos
 
 - [x] Compromisos fijos con periodicidad
-- [ ] Lo que falta pagar este mes
+- [x] Lo que falta pagar este mes
 
 ## Etapa 4: Presupuesto guiado
 

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Money } from "@/components/ui/money";
-import type { FixedRow as FixedRowData } from "@/lib/fixed/queries";
+import { cn } from "@/lib/cn";
+import { formatShortDay } from "@/lib/dates";
+import type { DueFixed, FixedRow as FixedRowData } from "@/lib/fixed/queries";
 import { frequencyLabels } from "./fixed-meta";
 
 function routeOf({ fixed, categoryName, accountName, cardName, destinationName }: FixedRowData) {
@@ -9,14 +11,23 @@ function routeOf({ fixed, categoryName, accountName, cardName, destinationName }
   return [categoryName, accountName ?? cardName].filter(Boolean).join(" · ");
 }
 
+function StatusLabel({ row }: { row: FixedRowData & Partial<Pick<DueFixed, "status" | "payment">> }) {
+  const { fixed, status, payment } = row;
+
+  if (payment) return <span className="font-semibold text-success-strong">Pagado el {formatShortDay(payment.date)}</span>;
+  if (status === "overdue") return <span className="font-semibold text-danger-strong">Venció el {fixed.dueDay}</span>;
+  return <>Vence el {fixed.dueDay}</>;
+}
+
 type FixedRowProps = {
-  row: FixedRowData;
-  status?: ReactNode;
+  row: FixedRowData & Partial<Pick<DueFixed, "status" | "payment">>;
+  pay?: ReactNode;
   actions: ReactNode;
 };
 
-export function FixedRow({ row, status, actions }: FixedRowProps) {
-  const { fixed, currency } = row;
+export function FixedRow({ row, pay, actions }: FixedRowProps) {
+  const { fixed, currency, payment } = row;
+  const isEstimate = fixed.variableAmount && !payment;
 
   return (
     <li className="flex items-center gap-3 py-2.5 pr-2 pl-4">
@@ -24,13 +35,16 @@ export function FixedRow({ row, status, actions }: FixedRowProps) {
         <p className="leading-snug font-semibold">{fixed.name}</p>
         <p className="text-sm text-muted">{routeOf(row)}</p>
         <p className="text-sm text-muted">
-          {status ?? `Vence el ${fixed.dueDay}`} · {frequencyLabels[fixed.frequency].toLowerCase()}
+          <StatusLabel row={row} /> · {frequencyLabels[fixed.frequency].toLowerCase()}
         </p>
       </div>
-      <span className="shrink-0 text-right font-semibold">
-        {fixed.variableAmount && <span className="text-muted">≈ </span>}
-        <Money cents={fixed.amount} currency={currency} />
-      </span>
+      <div className="flex shrink-0 flex-col items-end gap-1.5">
+        <span className={cn("font-semibold", payment && "text-muted")}>
+          {isEstimate && <span className="text-muted">≈ </span>}
+          <Money cents={payment?.amount ?? fixed.amount} currency={currency} />
+        </span>
+        {pay}
+      </div>
       {actions}
     </li>
   );

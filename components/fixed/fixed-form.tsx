@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { Currency, FixedCommitment, FixedKind } from "@/lib/db/schema";
 import { createFixed, updateFixed } from "@/lib/fixed/actions";
-import { centsToInput } from "@/lib/money";
+import { centsToInput, currencySymbols } from "@/lib/money";
 import { currentMonth } from "@/lib/month";
 import type { MovementFormData } from "@/lib/movements/queries";
 import { frequencyLabels, kindLabels } from "./fixed-meta";
@@ -24,7 +24,6 @@ const currencyOptions = [
   { value: "UYU", label: "Pesos" },
   { value: "USD", label: "Dólares" },
 ];
-const currencySymbols: Record<Currency, string> = { UYU: "$", USD: "US$" };
 
 function sourceOf(fixed?: FixedCommitment) {
   if (fixed?.kind !== "expense") return undefined;

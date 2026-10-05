@@ -9,10 +9,8 @@ import { useFormAction } from "@/components/ui/use-form-action";
 import { saveCardPayment } from "@/lib/cards/actions";
 import type { CurrencyTotals } from "@/lib/cards/statement";
 import { today } from "@/lib/dates";
-import { centsToInput, formatMoney } from "@/lib/money";
+import { centsToInput, currencySymbols, formatMoney } from "@/lib/money";
 import type { MonthMovement, MovementFormData } from "@/lib/movements/queries";
-
-const currencySymbols = { UYU: "$", USD: "US$" };
 
 type PayStatementFormProps = {
   cardId: string;
