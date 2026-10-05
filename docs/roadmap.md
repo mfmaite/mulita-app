@@ -10,7 +10,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [x] Registro e ingreso con Better Auth (email y Google)
 - [x] Shell responsive con selector de mes
 - [x] Categorías con set por defecto y descripción
-- [ ] Cuentas en pesos y dólares con saldo inicial
+- [x] Cuentas en pesos y dólares con saldo inicial
 - [ ] Movimientos: ingresos y gastos
 - [ ] Movimientos: transferencias y cuadrar saldo
 - [ ] Presupuestos por categoría y cotización mensual del dólar

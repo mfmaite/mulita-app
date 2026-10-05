@@ -1,16 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
-import { toast } from "sonner";
 import { Field } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { TextField } from "@/components/ui/text-field";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormAction } from "@/components/ui/use-form-action";
 import { createCategory, updateCategory } from "@/lib/categories/actions";
-import type { CategoryField } from "@/lib/categories/schemas";
 import type { Category } from "@/lib/db/schema";
-import type { FormState } from "@/lib/forms";
 
 const kindOptions = [
   { value: "expense", label: "Gasto" },
@@ -25,14 +22,7 @@ type CategoryFormProps = {
 export function CategoryForm({ category, onSaved }: CategoryFormProps) {
   const save = category ? updateCategory.bind(null, category.id) : createCategory;
 
-  const [state, action] = useActionState(async (previous: FormState<CategoryField>, formData: FormData) => {
-    const result = await save(previous, formData);
-    if (result.success) {
-      toast.success(result.success);
-      onSaved();
-    }
-    return result;
-  }, {});
+  const [state, action] = useFormAction(save, onSaved);
 
   const values = { ...category, ...state.values };
 

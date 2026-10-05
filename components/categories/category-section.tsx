@@ -19,7 +19,7 @@ export function CategorySection({ title, emptyText, categories }: CategorySectio
           {emptyText}
         </p>
       ) : (
-        <ul className="grid gap-2 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
           {categories.map((category) => (
             <li
               key={category.id}

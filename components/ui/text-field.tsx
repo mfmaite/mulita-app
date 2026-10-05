@@ -4,12 +4,13 @@ import { Input } from "./input";
 
 type TextFieldProps = ComponentProps<"input"> & {
   label: string;
+  hint?: string;
   errors?: string[];
 };
 
-export function TextField({ label, errors, ...props }: TextFieldProps) {
+export function TextField({ label, hint, errors, ...props }: TextFieldProps) {
   return (
-    <Field label={label} errors={errors}>
+    <Field label={label} hint={hint} errors={errors}>
       <Input aria-invalid={Boolean(errors?.length)} {...props} />
     </Field>
   );

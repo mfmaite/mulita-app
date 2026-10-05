@@ -3,23 +3,24 @@
 import { Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { deleteCategory } from "@/lib/categories/actions";
-import type { Category } from "@/lib/db/schema";
+import { Button } from "./button";
 
-type DeleteCategoryButtonProps = {
-  category: Category;
+type ConfirmDeleteButtonProps = {
+  label: string;
+  question: string;
+  successMessage: string;
+  onConfirm: () => Promise<void>;
   onDeleted: () => void;
 };
 
-export function DeleteCategoryButton({ category, onDeleted }: DeleteCategoryButtonProps) {
+export function ConfirmDeleteButton({ label, question, successMessage, onConfirm, onDeleted }: ConfirmDeleteButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const confirmDelete = () =>
+  const confirm = () =>
     startTransition(async () => {
-      await deleteCategory(category.id);
-      toast.success(`Listo, chau ${category.name}.`);
+      await onConfirm();
+      toast.success(successMessage);
       onDeleted();
     });
 
@@ -31,19 +32,19 @@ export function DeleteCategoryButton({ category, onDeleted }: DeleteCategoryButt
         onClick={() => setIsConfirming(true)}
       >
         <Trash2 className="size-5" aria-hidden />
-        Borrar categoría
+        {label}
       </Button>
     );
   }
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-2xl bg-danger-soft p-2 pl-4">
-      <span className="text-sm font-medium text-danger-strong">¿La borramos?</span>
+      <span className="text-sm font-medium text-danger-strong">{question}</span>
       <div className="flex gap-1">
         <Button variant="ghost" onClick={() => setIsConfirming(false)}>
           No
         </Button>
-        <Button variant="danger" disabled={isPending} onClick={confirmDelete}>
+        <Button variant="danger" disabled={isPending} onClick={confirm}>
           {isPending ? "Borrando..." : "Sí, borrar"}
         </Button>
       </div>
