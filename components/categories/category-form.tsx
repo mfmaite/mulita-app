@@ -22,12 +22,12 @@ type CategoryFormProps = {
 export function CategoryForm({ category, onSaved }: CategoryFormProps) {
   const save = category ? updateCategory.bind(null, category.id) : createCategory;
 
-  const [state, action] = useFormAction(save, onSaved);
+  const [state, onSubmit, isPending] = useFormAction(save, onSaved);
 
   const values = { ...category, ...state.values };
 
   return (
-    <form action={action} noValidate className="space-y-4">
+    <form onSubmit={onSubmit} noValidate className="space-y-4">
       <SegmentedControl
         label="Tipo"
         name="kind"
@@ -50,7 +50,7 @@ export function CategoryForm({ category, onSaved }: CategoryFormProps) {
           aria-invalid={Boolean(state.fieldErrors?.description)}
         />
       </Field>
-      <SubmitButton className="w-full" pendingLabel="Guardando...">
+      <SubmitButton pending={isPending} className="w-full" pendingLabel="Guardando...">
         {category ? "Guardar cambios" : "Crear categoría"}
       </SubmitButton>
     </form>

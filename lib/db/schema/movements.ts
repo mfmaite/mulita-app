@@ -4,7 +4,7 @@ import { users } from "./auth";
 import { categories } from "./categories";
 import { id, timestamps } from "./columns";
 
-export const movementTypes = ["income", "expense"] as const;
+export const movementTypes = ["income", "expense", "transfer", "adjustment"] as const;
 
 export const movementType = pgEnum("movement_type", movementTypes);
 
@@ -22,6 +22,8 @@ export const movements = pgTable(
       .references(() => accounts.id, { onDelete: "restrict" }),
     categoryId: uuid().references(() => categories.id, { onDelete: "restrict" }),
     amount: bigint({ mode: "number" }).notNull(),
+    destinationAccountId: uuid().references(() => accounts.id, { onDelete: "restrict" }),
+    destinationAmount: bigint({ mode: "number" }),
     detail: text(),
     ...timestamps,
   },
@@ -29,6 +31,7 @@ export const movements = pgTable(
     index("movements_user_id_date_idx").on(table.userId, table.date),
     index("movements_account_id_idx").on(table.accountId),
     index("movements_category_id_idx").on(table.categoryId),
+    index("movements_destination_account_id_idx").on(table.destinationAccountId),
   ],
 );
 

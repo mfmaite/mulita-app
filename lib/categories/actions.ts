@@ -3,9 +3,9 @@
 import { and, eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { categories, movements } from "@/lib/db/schema";
+import { categories } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
-import { hasMovements } from "@/lib/movements/usage";
+import { isCategoryInUse } from "@/lib/movements/usage";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
 import { categorySchema, type CategoryField } from "./schemas";
 
@@ -36,7 +36,7 @@ export async function updateCategory(id: string, _: CategoryState, formData: For
     formData,
     save: async (data, userId) => {
       const [current] = await db.select({ kind: categories.kind }).from(categories).where(ownCategory(id, userId));
-      if (current && current.kind !== data.kind && (await hasMovements(movements.categoryId, id))) {
+      if (current && current.kind !== data.kind && (await isCategoryInUse(id))) {
         throw new FieldError("kind", "No podés cambiar el tipo de una categoría que ya tiene movimientos.");
       }
       await db.update(categories).set(data).where(ownCategory(id, userId));
@@ -48,7 +48,7 @@ export async function updateCategory(id: string, _: CategoryState, formData: For
 export async function deleteCategory(id: string) {
   const { user } = await requireSession();
 
-  if (await hasMovements(movements.categoryId, id)) {
+  if (await isCategoryInUse(id)) {
     await db.update(categories).set({ archivedAt: new Date() }).where(ownCategory(id, user.id));
     revalidateApp();
     return "La archivamos: tiene movimientos, así que la sacamos de la lista sin perder nada.";

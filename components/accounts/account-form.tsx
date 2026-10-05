@@ -19,7 +19,7 @@ type AccountFormProps = {
 
 export function AccountForm({ account, onSaved }: AccountFormProps) {
   const save = account ? updateAccount.bind(null, account.id) : createAccount;
-  const [state, action] = useFormAction(save, onSaved);
+  const [state, onSubmit, isPending] = useFormAction(save, onSaved);
 
   const values = {
     name: account?.name,
@@ -30,7 +30,7 @@ export function AccountForm({ account, onSaved }: AccountFormProps) {
   };
 
   return (
-    <form action={action} noValidate className="space-y-4">
+    <form onSubmit={onSubmit} noValidate className="space-y-4">
       <TextField
         label="Nombre"
         name="name"
@@ -55,7 +55,7 @@ export function AccountForm({ account, onSaved }: AccountFormProps) {
         defaultValue={values.initialBalance}
         errors={state.fieldErrors?.initialBalance}
       />
-      <SubmitButton className="w-full" pendingLabel="Guardando...">
+      <SubmitButton pending={isPending} className="w-full" pendingLabel="Guardando...">
         {account ? "Guardar cambios" : "Crear cuenta"}
       </SubmitButton>
     </form>

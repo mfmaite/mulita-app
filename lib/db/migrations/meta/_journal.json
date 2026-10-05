@@ -29,6 +29,13 @@
       "when": 1791161574928,
       "tag": "0003_movements",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791162563374,
+      "tag": "0004_transfers_and_adjustments",
+      "breakpoints": true
     }
   ]
 }

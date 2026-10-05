@@ -3,9 +3,9 @@
 import { and, eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { accounts, movements } from "@/lib/db/schema";
+import { accounts } from "@/lib/db/schema";
 import type { FormState } from "@/lib/forms";
-import { hasMovements } from "@/lib/movements/usage";
+import { isAccountInUse } from "@/lib/movements/usage";
 import { FieldError, revalidateApp, saveForm } from "@/lib/save-form";
 import { accountSchema, type AccountField } from "./schemas";
 
@@ -36,7 +36,7 @@ export async function updateAccount(id: string, _: AccountState, formData: FormD
     formData,
     save: async (data, userId) => {
       const [current] = await db.select({ currency: accounts.currency }).from(accounts).where(ownAccount(id, userId));
-      if (current && current.currency !== data.currency && (await hasMovements(movements.accountId, id))) {
+      if (current && current.currency !== data.currency && (await isAccountInUse(id))) {
         throw new FieldError("currency", "No podés cambiar la moneda de una cuenta que ya tiene movimientos.");
       }
       await db.update(accounts).set(data).where(ownAccount(id, userId));
@@ -48,7 +48,7 @@ export async function updateAccount(id: string, _: AccountState, formData: FormD
 export async function deleteAccount(id: string) {
   const { user } = await requireSession();
 
-  if (await hasMovements(movements.accountId, id)) {
+  if (await isAccountInUse(id)) {
     await db.update(accounts).set({ archivedAt: new Date() }).where(ownAccount(id, user.id));
     revalidateApp();
     return "La archivamos: tiene movimientos, así que la sacamos de la lista sin perder nada.";

@@ -37,8 +37,10 @@ export async function saveForm<Field extends string, Data>({
 
   const { user } = await requireSession();
 
+  let message: unknown;
+
   try {
-    await save(parsed.data, user.id);
+    message = await save(parsed.data, user.id);
   } catch (error) {
     const fieldError =
       error instanceof FieldError
@@ -51,7 +53,7 @@ export async function saveForm<Field extends string, Data>({
   }
 
   revalidateApp();
-  return { success };
+  return { success: typeof message === "string" ? message : success };
 }
 
 export function revalidateApp() {

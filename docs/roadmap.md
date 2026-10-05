@@ -12,7 +12,7 @@ Hoja de ruta del MVP. Cada ítem es un commit: cuando se termina, se tacha.
 - [x] Categorías con set por defecto y descripción
 - [x] Cuentas en pesos y dólares con saldo inicial
 - [x] Movimientos: ingresos y gastos
-- [ ] Movimientos: transferencias y cuadrar saldo
+- [x] Movimientos: transferencias y cuadrar saldo
 - [ ] Presupuestos por categoría y cotización mensual del dólar
 
 ## Etapa 2: Tarjetas y metas
